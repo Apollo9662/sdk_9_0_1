@@ -119,12 +119,19 @@ public class RobotHardware_apollo {
         frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
         collection.setDirection(DcMotorSimple.Direction.FORWARD);
         lift.setDirection(DcMotorSimple.Direction.REVERSE);
-        lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         armServo.setDirection(Servo.Direction.FORWARD);
         armGardServo.setDirection(Servo.Direction.FORWARD);
-        //armGardServo.setPosition(0.45);
-        //armServo.setPosition(0.72);
+        backLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        collection.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+    public void ServoInit()
+    {
+        armGardServo.setPosition(0.45);
+        armServo.setPosition(0.72);
     }
     public void SetPower(DriveMotors motor, double Power)
     {

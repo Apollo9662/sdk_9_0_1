@@ -35,6 +35,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -91,7 +92,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  */
 
 @Autonomous(name="Robot: Auto Drive By Gyro Oren    ", group="Robot")
-@Disabled
+//@Disabled
 public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
 
     /* Declare OpMode members. */
@@ -99,6 +100,9 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
     private DcMotor         frontRightDrive  = null;
     private DcMotor         backLeftDrive    = null;
     private DcMotor         backRightDrive   = null;
+    private Servo armServo;
+    private Servo armGardServo;
+    public DcMotor lift = null;
     private BNO055IMU       imu         = null;      // Control/Expansion Hub IMU
 
     private double          robotHeading  = 0;
@@ -149,6 +153,9 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
         frontRightDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
         backLeftDrive   = hardwareMap.get(DcMotor.class, "back_left_drive" );
         backRightDrive  = hardwareMap.get(DcMotor.class, "back_right_drive");
+        armServo = hardwareMap.get(Servo.class, "collection_servo");//0
+        armGardServo = hardwareMap.get(Servo.class, "collection_gard_servo");
+        lift = hardwareMap.get(DcMotor.class, "lift");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
@@ -157,6 +164,9 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
         frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        armServo.setDirection(Servo.Direction.FORWARD);
+        armGardServo.setDirection(Servo.Direction.FORWARD);
+        lift.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // define initialization values for IMU, and then initialize it.
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -169,6 +179,7 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
         frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -185,6 +196,7 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
         frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         resetHeading();
 
         // Step through each leg of the path,
@@ -193,17 +205,20 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
         //          Add a sleep(2000) after any step to keep the telemetry data visible for review
 
 
-        driveStraight(DRIVE_SPEED, 94.0, 0.0);    // Drive Forward 24"
-        turnToHeading( TURN_SPEED, -90.0);               // Turn  CW to -45 Degrees
-
-        driveStraight(DRIVE_SPEED, 70.5, -90.0);  // Drive Forward 17" at -45 degrees (12"x and 12"y)
-        turnToHeading( TURN_SPEED,  -180.0);               // Turn  CCW  to  45 Degrees
-
-        driveStraight(DRIVE_SPEED, 94.0, -180.0);  // Drive Forward 17" at 45 degrees (-12"x and 12"y)
-        turnToHeading( TURN_SPEED,   -270.0);               // Turn  CW  to 0 Degrees
-
-        driveStraight(DRIVE_SPEED,70.5, 90.0);    // Drive in Reverse 48" (should return to approx. staring position)
-        turnToHeading( TURN_SPEED,   0.0);               // Turn  CW  to 0 Degrees
+        driveStraight(DRIVE_SPEED, -23.5, 0.0);
+        armServo.setPosition(0.25);
+        armGardServo.setPosition(0.3);
+        sleep(14000);
+        armGardServo.setPosition(0.45);
+        armServo.setPosition(0.71);// Drive Forward 24"
+        //sleep(3000);
+        turnToHeading( TURN_SPEED, -90.0);
+        driveStraight(DRIVE_SPEED, -33, -90.0);
+        //sleep(3000);
+        lift.setTargetPosition(500);
+        lift.setPower(1);
+        armServo.setPosition(0.25);
+        armGardServo.setPosition(0.15);
 
         //driveStraight(DRIVE_SPEED, 20.5, 0.0);  // Drive Forward 17" at 45 degrees (-12"x and 12"y)
         //turnToHeading( TURN_SPEED,   -90.0);               // Turn  CW  to 0 Degrees
@@ -267,7 +282,7 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
 
             // keep looping while we are still active, and BOTH motors are running.
             while (opModeIsActive() &&
-                   (frontLeftDrive.isBusy() && frontRightDrive.isBusy() && backLeftDrive.isBusy() && backRightDrive.isBusy())) {
+                    (frontLeftDrive.isBusy() && frontRightDrive.isBusy() && backLeftDrive.isBusy() && backRightDrive.isBusy())) {
 
                 // Determine required steering to keep on heading
                 turnSpeed = getSteeringCorrection(heading, P_DRIVE_GAIN);

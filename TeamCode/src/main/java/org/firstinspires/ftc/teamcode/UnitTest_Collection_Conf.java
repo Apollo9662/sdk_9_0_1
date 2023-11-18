@@ -4,11 +4,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-@TeleOp(name="UnitTest Collection", group="Unit Test")
+@TeleOp(name="UnitTest Collection Conf", group="Unit Test")
 //@Disabled
-public class UnitTest_Collection extends LinearOpMode {
+public class UnitTest_Collection_Conf extends LinearOpMode {
     private DcMotor Collection = null;
     RobotHardware_apollo robot = new RobotHardware_apollo();
+    double power = 1;
+    boolean press;
 
 
 
@@ -22,16 +24,46 @@ public class UnitTest_Collection extends LinearOpMode {
         {
             if (gamepad1.right_bumper == true)
             {
-                robot.SetPower(RobotHardware_apollo.DriveMotors.COLLECTION, 1);
+                robot.SetPower(RobotHardware_apollo.DriveMotors.COLLECTION , power);
             }
              else if (gamepad1.left_bumper == true)
-             {
-                robot.SetPower(RobotHardware_apollo.DriveMotors.COLLECTION, -1);
+            {
+                robot.SetPower(RobotHardware_apollo.DriveMotors.COLLECTION , -power);
             }
             else
             {
                 robot.SetPower(RobotHardware_apollo.DriveMotors.COLLECTION , 0);
             }
+            if (gamepad1.x == true)
+            {
+                if (press == false)
+                {
+                    press = true;
+                    if (power < 1.0)
+                    {
+                        power += 0.1;
+                    }
+                }
+            }
+            else if (gamepad1.b == true)
+            {
+                if (press == false)
+                {
+                    press = true;
+                    if(power >= 0.1)
+                    {
+                        power -= 0.1;
+                    }
+                }
+
+            }
+            if ((gamepad1.x == false)&& (gamepad1.b == false))
+            {
+                press = false;
+            }
+
+             telemetry.addData("power is ", "%1.2f" ,  power);
+            telemetry.update();
         }
     }
 }

@@ -31,22 +31,10 @@ package org.firstinspires.ftc.teamcode;
 
 import android.util.Log;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
-
-import org.firstinspires.ftc.robotcontroller.external.samples.RobotHardware;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-import org.tensorflow.lite.task.vision.detector.ObjectDetector;
-
-import java.util.List;
 
 
 /**
@@ -62,9 +50,9 @@ import java.util.List;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="TeleOp apollo", group="TeleOp")
+@TeleOp(name="TeleOp apollo Omer W", group="TeleOp")
 //@Disabled
-public class BasicOpMode_Linear_apollo extends LinearOpMode {
+public class BasicOpMode_Linear_apollo_Omer extends LinearOpMode {
 
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -347,8 +335,7 @@ public class BasicOpMode_Linear_apollo extends LinearOpMode {
 
                 while ((opModeIsActive()) && (!isInterrupted()))
                 {
-                    double collectionF = gamepad2.right_trigger;
-                    double collectionR = gamepad2.left_trigger;
+                    double collection = gamepad2.right_stick_y;
                     boolean collectPixel = gamepad2.left_bumper;
                     boolean dumpPixel =  gamepad2.right_bumper;
                     //boolean doNotGoDownSwitch = gamepad2.right_bumper;
@@ -384,7 +371,7 @@ public class BasicOpMode_Linear_apollo extends LinearOpMode {
                     }
 
 
-                    if (collectionF > 0)
+                    if (collection > 0)
                     {
                             if (pressCollection == false)
                             {
@@ -393,11 +380,11 @@ public class BasicOpMode_Linear_apollo extends LinearOpMode {
                                 //liftTread.goTo(0);
 
                             }
-                        collection(1);
+                        collection(0.9);
                     }
-                    else if (collectionR > 0)
+                    else if (collection < 0)
                     {
-                        collection(-1);
+                        collection(-0.9);
                     }
                     //else if ((detection.tfod.getRecognitions().size() < 0))
                     else
@@ -473,13 +460,12 @@ public class BasicOpMode_Linear_apollo extends LinearOpMode {
             liftTime.reset();
             while ((opModeIsActive()) && (!isInterrupted()))
             {
-                boolean liftUp = gamepad2.dpad_up;
-                boolean liftDown = gamepad2.dpad_down;
+                float liftUp = gamepad2.left_stick_y;
                 boolean liftPositionY = gamepad2.y;
                 boolean liftPositionA = gamepad2.a;
                 boolean liftPositionB = gamepad2.b;
                 boolean liftPositionX = gamepad2.x;
-                if (liftUp == false)
+                if (liftUp == 0)
                 {
                     resetIncoder();
                 }
@@ -505,7 +491,7 @@ public class BasicOpMode_Linear_apollo extends LinearOpMode {
                         EndOfGetToPos();
                     }
                 }
-                if (liftUp == true)
+                if (liftUp > 0)
                 {
                     if (robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.LIFT) < liftMaxHight)
                     {
@@ -525,7 +511,7 @@ public class BasicOpMode_Linear_apollo extends LinearOpMode {
                     }
 
                 }
-                else if (liftDown == true)
+                else if (liftUp < 0)
                 {
                     if (liftState != LiftState.RESETING_INCODER)
                     {

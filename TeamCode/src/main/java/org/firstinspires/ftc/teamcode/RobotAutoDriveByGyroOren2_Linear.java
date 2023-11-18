@@ -91,7 +91,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  */
 
 @Autonomous(name="Robot: Auto Drive By Gyro Oren 2   ", group="Robot")
-@Disabled
+//@Disabled
 public class RobotAutoDriveByGyroOren2_Linear extends LinearOpMode {
 
     /* Declare OpMode members. */
