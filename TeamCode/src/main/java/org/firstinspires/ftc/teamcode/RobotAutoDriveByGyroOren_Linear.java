@@ -104,13 +104,13 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
                 RIGHT,
                 LEFT}
     ProbPos probPos;
-    private DcMotor         frontLeftDrive   = null;
-    private DcMotor         frontRightDrive  = null;
-    private DcMotor         backLeftDrive    = null;
-    private DcMotor         backRightDrive   = null;
-    private Servo armServo;
-    private Servo armGardServo;
-    public DcMotor lift = null;
+    //private DcMotor         frontLeftDrive   = null;
+    //private DcMotor         frontRightDrive  = null;
+    //private DcMotor         backLeftDrive    = null;
+    //private DcMotor         backRightDrive   = null;
+    //private Servo armServo;
+    //private Servo armGardServo;
+    //public DcMotor lift = null;
     private BNO055IMU       imu         = null;      // Control/Expansion Hub IMU
 
     private double          robotHeading  = 0;
@@ -152,10 +152,14 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
     static final double     P_TURN_GAIN            = 0.01;     // Larger is more responsive, but also less stable ; PLAY WITH THIS
     static final double     P_DRIVE_GAIN           = 0.02;     // Larger is more responsive, but also less stable
 
+    RobotHardware_apollo robot = new RobotHardware_apollo();
 
     @Override
     public void runOpMode() {
 
+        robot.init(hardwareMap);
+        robot.ServoInit();
+        /*
         // Initialize the drive system variables.
         frontLeftDrive  = hardwareMap.get(DcMotor.class, "front_left_drive");
         frontRightDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
@@ -175,23 +179,31 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
         armServo.setDirection(Servo.Direction.FORWARD);
         armGardServo.setDirection(Servo.Direction.FORWARD);
         lift.setDirection(DcMotorSimple.Direction.REVERSE);
+         */
 
         // define initialization values for IMU, and then initialize it.
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit            = BNO055IMU.AngleUnit.DEGREES;
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
-
+        robot.SetAllDriveMotorsMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         // Ensure the robot is stationary.  Reset the encoders and set the motors to BRAKE mode
+        /*
         frontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+         */
+        robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT, DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.SetAllDriveMotorsZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        /*
         frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+         */
 
         // Wait for the game to start (Display Gyro value while waiting)
         while (opModeInInit()) {
@@ -200,11 +212,15 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
         }
 
         // Set the encoders for closed loop speed control, and reset the heading.
+        robot.SetAllDriveMotorsMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        /*
         frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+         */
+        robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT, DcMotor.RunMode.RUN_USING_ENCODER);
+        //lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         resetHeading();
 
         // Step through each leg of the path,
@@ -256,21 +272,17 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
 
             // Determine new target position, and pass to motor controller
             int moveCounts = (int)(distance * COUNTS_PER_INCH);
-            leftTarget = frontLeftDrive.getCurrentPosition() + moveCounts;
-            rightTarget = frontRightDrive.getCurrentPosition() + moveCounts;
-            leftTarget = backLeftDrive.getCurrentPosition() + moveCounts;
-            rightTarget = backRightDrive.getCurrentPosition() + moveCounts;
+            leftTarget = (int) robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE) + moveCounts;
+            rightTarget = (int) robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE) + moveCounts;
+            leftTarget = (int) robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE) + moveCounts;
+            rightTarget = (int)robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE) + moveCounts;
 
             // Set Target FIRST, then turn on RUN_TO_POSITION
-            frontLeftDrive.setTargetPosition(leftTarget);
-            frontRightDrive.setTargetPosition(rightTarget);
-            backLeftDrive.setTargetPosition(leftTarget);
-            backRightDrive.setTargetPosition(rightTarget);
-
-            frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.SetTargetPosition(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE, leftTarget);
+            robot.SetTargetPosition(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE, rightTarget);
+            robot.SetTargetPosition(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE, leftTarget);
+            robot.SetTargetPosition(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE, rightTarget);
+            robot.SetAllDriveMotorsMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             // Set the required driving speed  (must be positive for RUN_TO_POSITION)
             // Start driving straight, and then enter the control loop
@@ -279,7 +291,10 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
 
             // keep looping while we are still active, and BOTH motors are running.
             while (opModeIsActive() &&
-                    (frontLeftDrive.isBusy() && frontRightDrive.isBusy() && backLeftDrive.isBusy() && backRightDrive.isBusy())) {
+                    (robot.IsBusy(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE) &&
+                            robot.IsBusy(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE) &&
+                                robot.IsBusy(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE) &&
+                                    robot.IsBusy(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE))){
 
                 // Determine required steering to keep on heading
                 turnSpeed = getSteeringCorrection(heading, P_DRIVE_GAIN);
@@ -297,10 +312,7 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
 
             // Stop all motion & Turn off RUN_TO_POSITION
             moveRobot(0, 0);
-            frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.SetAllDriveMotorsMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
     public void driveRight(double maxDriveSpeed,
@@ -312,21 +324,17 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
 
             // Determine new target position, and pass to motor controller
             int moveCounts = (int) (Math.abs(distance) * COUNTS_PER_INCH);
-            leftTarget = frontLeftDrive.getCurrentPosition() + moveCounts;
-            rightTarget = frontRightDrive.getCurrentPosition() + moveCounts;
-            leftTarget = backLeftDrive.getCurrentPosition() + moveCounts;
-            rightTarget = backRightDrive.getCurrentPosition() + moveCounts;
+            leftTarget = (int) robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE) + moveCounts;
+            rightTarget = (int) robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE) + moveCounts;
+            leftTarget = (int) robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE) + moveCounts;
+            rightTarget = (int)robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE) + moveCounts;
 
             // Set Target FIRST, then turn on RUN_TO_POSITION
-            frontLeftDrive.setTargetPosition(leftTarget);
-            frontRightDrive.setTargetPosition(-rightTarget);
-            backLeftDrive.setTargetPosition(-leftTarget);
-            backRightDrive.setTargetPosition(rightTarget);
-
-            frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.SetTargetPosition(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE, leftTarget);
+            robot.SetTargetPosition(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE, rightTarget);
+            robot.SetTargetPosition(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE, leftTarget);
+            robot.SetTargetPosition(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE, rightTarget);
+            robot.SetAllDriveMotorsMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             // Set the required driving speed  (must be positive for RUN_TO_POSITION)
             // Start driving straight, and then enter the control loop
@@ -335,7 +343,10 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
 
             // keep looping while we are still active, and BOTH motors are running.
             while (opModeIsActive() &&
-                    (frontLeftDrive.isBusy() && frontRightDrive.isBusy() && backLeftDrive.isBusy() && backRightDrive.isBusy())) {
+                    (robot.IsBusy(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE) &&
+                            robot.IsBusy(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE) &&
+                            robot.IsBusy(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE) &&
+                            robot.IsBusy(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE))){
 
                 // Determine required steering to keep on heading
                 turnSpeed = getSteeringCorrection(heading, P_DRIVE_GAIN);
@@ -353,10 +364,7 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
 
             // Stop all motion & Turn off RUN_TO_POSITION
             moveRobot(0, 0);
-            frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.SetAllDriveMotorsMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
     public void driveLeft(double maxDriveSpeed,
@@ -368,21 +376,17 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
 
             // Determine new target position, and pass to motor controller
             int moveCounts = (int) (Math.abs(distance) * COUNTS_PER_INCH);
-            leftTarget = frontLeftDrive.getCurrentPosition() + moveCounts;
-            rightTarget = frontRightDrive.getCurrentPosition() + moveCounts;
-            leftTarget = backLeftDrive.getCurrentPosition() + moveCounts;
-            rightTarget = backRightDrive.getCurrentPosition() + moveCounts;
+            leftTarget = (int) robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE) + moveCounts;
+            rightTarget = (int) robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE) + moveCounts;
+            leftTarget = (int) robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE) + moveCounts;
+            rightTarget = (int)robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE) + moveCounts;
 
             // Set Target FIRST, then turn on RUN_TO_POSITION
-            frontLeftDrive.setTargetPosition(-leftTarget);
-            frontRightDrive.setTargetPosition(rightTarget);
-            backLeftDrive.setTargetPosition(leftTarget);
-            backRightDrive.setTargetPosition(-rightTarget);
-
-            frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.SetTargetPosition(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE, leftTarget);
+            robot.SetTargetPosition(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE, rightTarget);
+            robot.SetTargetPosition(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE, leftTarget);
+            robot.SetTargetPosition(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE, rightTarget);
+            robot.SetAllDriveMotorsMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             // Set the required driving speed  (must be positive for RUN_TO_POSITION)
             // Start driving straight, and then enter the control loop
@@ -391,7 +395,10 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
 
             // keep looping while we are still active, and BOTH motors are running.
             while (opModeIsActive() &&
-                    (frontLeftDrive.isBusy() && frontRightDrive.isBusy() && backLeftDrive.isBusy() && backRightDrive.isBusy())) {
+                    (robot.IsBusy(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE) &&
+                            robot.IsBusy(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE) &&
+                            robot.IsBusy(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE) &&
+                            robot.IsBusy(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE))){
 
                 // Determine required steering to keep on heading
                 turnSpeed = getSteeringCorrection(heading, P_DRIVE_GAIN);
@@ -409,10 +416,7 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
 
             // Stop all motion & Turn off RUN_TO_POSITION
             moveRobot(0, 0);
-            frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.SetAllDriveMotorsMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
 
@@ -539,10 +543,10 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
             frontRightPower /= max;
         }
 
-        backLeftDrive.setPower(backLeftPower);
-        backRightDrive.setPower(backRightPower);
-        frontRightDrive.setPower(frontRightPower);
-        frontLeftDrive.setPower(frontLeftPower);
+        robot.SetPower(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE, backLeftPower);
+        robot.SetPower(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE, backRightPower);
+        robot.SetPower(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE, frontRightPower);
+        robot.SetPower(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE, frontLeftPower);
     }
 
     /**
@@ -555,8 +559,8 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
         if (straight) {
             telemetry.addData("Motion", "Drive Straight");
             telemetry.addData("Target Pos L:R",  "%7d:%7d",      leftTarget,  rightTarget);
-            telemetry.addData("Actual Pos L:R",  "%7d:%7d",      frontLeftDrive.getCurrentPosition(),
-                    frontRightDrive.getCurrentPosition());
+           // telemetry.addData("Actual Pos L:R",  "%7d:%7d",      frontLeftDrive.getCurrentPosition(),
+                    //frontRightDrive.getCurrentPosition());
         } else {
             telemetry.addData("Motion", "Turning");
         }
@@ -590,60 +594,87 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
             case UP:
                 time.reset();
                 driveStraight(DRIVE_SPEED, -23.5, 0.0);
-                armServo.setPosition(0.25);
-                armGardServo.setPosition(0.3);
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO,robot.ARM_SERVO_DUMP_POS);
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO,robot.ARM_SERVO_GARD_OPEN_CLOSE_POS);
+                //armServo.setPosition(0.25);
+                //armGardServo.setPosition(0.3);
                 sleep(600);
-                armGardServo.setPosition(0.45);
-                armServo.setPosition(0.71);// Drive Forward 24"
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO,robot.ARM_SERVO_GARD_CLOSE_POS);
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO,robot.ARM_SERVO_COLLECT_POS);
+                //armGardServo.setPosition(0.45);
+                //armServo.setPosition(0.71);// Drive Forward 24"
                 //sleep(3000);
                 turnToHeading( TURN_SPEED, -90.0);
                 driveStraight(DRIVE_SPEED, -34, -90.0);
                 //sleep(3000);
-                lift.setTargetPosition(300);
-                lift.setPower(1);
-                armServo.setPosition(0.25);
-                armGardServo.setPosition(0.15);
+                robot.SetTargetPosition(RobotHardware_apollo.DriveMotors.LIFT, 300);
+                robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT, DcMotor.RunMode.RUN_TO_POSITION);
+                robot.SetPower(RobotHardware_apollo.DriveMotors.LIFT, 1);
+                //lift.setTargetPosition(300);
+                //lift.setPower(1);
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO,robot.ARM_SERVO_DUMP_POS);
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO,robot.ARM_SERVO_GARD_OPEN_POS);
+                //armServo.setPosition(0.25);
+                //armGardServo.setPosition(0.15);
                 Log.d(TAG_TIME, "the final time is " + time.milliseconds());
                 break;
             case RIGHT:
                 time.reset();
                 driveStraight(DRIVE_SPEED, -23.5, 0.0);
                 turnToHeading(TURN_SPEED, -90);
-                armServo.setPosition(0.25);
-                armGardServo.setPosition(0.3);
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO,robot.ARM_SERVO_DUMP_POS);
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO,robot.ARM_SERVO_GARD_OPEN_CLOSE_POS);
+                //armServo.setPosition(0.25);
+                //armGardServo.setPosition(0.3);
                 sleep(600);
-                armGardServo.setPosition(0.45);
-                armServo.setPosition(0.71);// Drive Forward 24"
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO,robot.ARM_SERVO_GARD_CLOSE_POS);
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO,robot.ARM_SERVO_COLLECT_POS);
+                //armGardServo.setPosition(0.45);
+                //armServo.setPosition(0.71);// Drive Forward 24"
                 //sleep(3000);
                 //turnToHeading( TURN_SPEED, -90.0);
                 driveStraight(DRIVE_SPEED, -34, -90.0);
                 driveRight(DRIVE_SPEED, -5, -90);
                 //sleep(3000);
-                lift.setTargetPosition(300);
-                lift.setPower(1);
-                armServo.setPosition(0.25);
-                armGardServo.setPosition(0.15);
+                robot.SetTargetPosition(RobotHardware_apollo.DriveMotors.LIFT, 300);
+                robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT, DcMotor.RunMode.RUN_TO_POSITION);
+                robot.SetPower(RobotHardware_apollo.DriveMotors.LIFT, 1);
+                //lift.setTargetPosition(300);
+                //lift.setPower(1);
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO,robot.ARM_SERVO_DUMP_POS);
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO,robot.ARM_SERVO_GARD_OPEN_POS);
+                //armServo.setPosition(0.25);
+                //armGardServo.setPosition(0.15);
                 Log.d(TAG_TIME, "the final time is " + time.milliseconds());
                 break;
             case LEFT:
                 time.reset();
                 driveStraight(DRIVE_SPEED, -23.5, 0.0);
                 turnToHeading(TURN_SPEED, 90);
-                armServo.setPosition(0.25);
-                armGardServo.setPosition(0.3);
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO,robot.ARM_SERVO_DUMP_POS);
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO,robot.ARM_SERVO_GARD_OPEN_CLOSE_POS);
+                //armServo.setPosition(0.25);
+                //armGardServo.setPosition(0.3);
                 sleep(600);
-                armGardServo.setPosition(0.45);
-                armServo.setPosition(0.71);// Drive Forward 24"
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO,robot.ARM_SERVO_GARD_CLOSE_POS);
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO,robot.ARM_SERVO_COLLECT_POS);
+                //armGardServo.setPosition(0.45);
+                //armServo.setPosition(0.71);// Drive Forward 24"
                 turnToHeading(TURN_SPEED, -90);
                 //sleep(3000);
                 //turnToHeading( TURN_SPEED, -90.0);
                 driveStraight(DRIVE_SPEED, -34, -90.0);
                 driveLeft(DRIVE_SPEED, -5, -90);
                 //sleep(3000);
-                lift.setTargetPosition(300);
-                lift.setPower(1);
-                armServo.setPosition(0.25);
-                armGardServo.setPosition(0.15);
+                robot.SetTargetPosition(RobotHardware_apollo.DriveMotors.LIFT, 300);
+                robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT, DcMotor.RunMode.RUN_TO_POSITION);
+                robot.SetPower(RobotHardware_apollo.DriveMotors.LIFT, 1);
+                //lift.setTargetPosition(300);
+                //lift.setPower(1);
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO,robot.ARM_SERVO_DUMP_POS);
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO,robot.ARM_SERVO_GARD_OPEN_POS);
+                //armServo.setPosition(0.25);
+                //armGardServo.setPosition(0.15);
                 Log.d(TAG_TIME, "the final time is " + time.milliseconds());
 
         }

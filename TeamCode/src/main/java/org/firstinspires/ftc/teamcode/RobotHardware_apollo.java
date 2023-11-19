@@ -173,7 +173,6 @@ public class RobotHardware_apollo {
                 break;
         }
     }
-
     public double GetPower(DriveMotors motor)
     {
         switch (motor) {
@@ -294,6 +293,13 @@ public class RobotHardware_apollo {
                 break;
         }
     }
+    public void SetAllDriveMotorsMode(DcMotor.RunMode myMode)
+    {
+        frontLeftDrive.setMode(myMode);
+        frontRightDrive.setMode(myMode);
+        backRightDrive.setMode(myMode);
+        backLeftDrive.setMode(myMode);
+    }
     public void SetPosition(DriveMotors motor, double Position)
     {
         switch (motor) {
@@ -325,7 +331,18 @@ public class RobotHardware_apollo {
     {
         switch (motor)
         {
-
+            case BACK_LEFT_DRIVE: {
+                return backLeftDrive.isBusy();
+            }
+            case BACK_RIGHT_DRIVE: {
+                return backRightDrive.isBusy();
+            }
+            case FRONT_LEFT_DRIVE: {
+                return frontLeftDrive.isBusy();
+            }
+            case FRONT_RIGHT_DRIVE: {
+                return frontRightDrive.isBusy();
+            }
             case LIFT:
                 return lift.isBusy();
             default:
@@ -357,6 +374,13 @@ public class RobotHardware_apollo {
             default:
                 break;
         }
+    }
+    public void SetAllDriveMotorsZeroPowerBehavior(DcMotor.ZeroPowerBehavior myZeroPowerBehavior)
+    {
+        frontLeftDrive.setZeroPowerBehavior(myZeroPowerBehavior);
+        frontRightDrive.setZeroPowerBehavior(myZeroPowerBehavior);
+        backRightDrive.setZeroPowerBehavior(myZeroPowerBehavior);
+        backLeftDrive.setZeroPowerBehavior(myZeroPowerBehavior);
     }
 
 
