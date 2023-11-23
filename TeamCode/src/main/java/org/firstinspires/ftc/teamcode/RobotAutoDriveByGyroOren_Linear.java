@@ -100,6 +100,8 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
     /* Declare OpMode members. */
     private ElapsedTime time = new ElapsedTime();
     final String TAG_TIME = "time";
+    final String TAG_DRIVE = "drive";
+
     enum ProbPos{UP,
                 RIGHT,
                 LEFT}
@@ -272,12 +274,19 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
+
+            Log.d(TAG_DRIVE, "drive Straight; maxDriveSpeed: " + maxDriveSpeed + " distance: "+ distance + "heading: " + heading);
             // Determine new target position, and pass to motor controller
             int moveCounts = (int)(distance * COUNTS_PER_INCH);
             frontLeftTarget = (int) robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE) + moveCounts;
             frontRightTarget = (int) robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE) + moveCounts;
             backLeftTarget = (int) robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE) + moveCounts;
             backRightTarget = (int)robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE) + moveCounts;
+            Log.d(TAG_DRIVE,"Current Position; front left: " + robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE) +
+                    "front right "+ robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE) +
+                    "back left "+ robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE)+
+                    "back left "+ robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE)) ;
+
 
             // Set Target FIRST, then turn on RUN_TO_POSITION
             robot.SetTargetPosition(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE, frontLeftTarget);
@@ -324,13 +333,17 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
+            Log.d(TAG_DRIVE, "drive right; maxDriveSpeed: " + maxDriveSpeed + "distance: " + heading);
             // Determine new target position, and pass to motor controller
             int moveCounts = (int) (Math.abs(distance) * COUNTS_PER_INCH);
             frontLeftTarget = (int) robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE) + moveCounts;
             frontRightTarget = (int) robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE) - moveCounts;
             backLeftTarget = (int) robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE) - moveCounts;
             backRightTarget = (int)robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE) + moveCounts;
-
+            Log.d(TAG_DRIVE,"Current Position; front left: " + robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE) +
+                                  "front right " + robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE) +
+                                  "back left " + robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE) +
+                                  "back right " + robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE));
             // Set Target FIRST, then turn on RUN_TO_POSITION
             robot.SetTargetPosition(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE, frontLeftTarget);
             robot.SetTargetPosition(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE, frontRightTarget);
@@ -375,14 +388,17 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
 
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
-
+            Log.d(TAG_DRIVE, "drive left; maxDriveSpeed: " + maxDriveSpeed + "distance:" + "distance: " + distance + "heading: "+ heading);
             // Determine new target position, and pass to motor controller
             int moveCounts = (int) (Math.abs(distance) * COUNTS_PER_INCH);
             frontLeftTarget = (int) robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE) + moveCounts;
             frontRightTarget = (int) robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE) - moveCounts;
             backLeftTarget = (int) robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE) - moveCounts;
             backRightTarget = (int)robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE) + moveCounts;
-
+            Log.d(TAG_DRIVE,"Current Position; front left: " + robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE) +
+                    "front right "+ robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE) +
+                    "back left "+ robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE)+
+                    "back left "+ robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE)) ;
             // Set Target FIRST, then turn on RUN_TO_POSITION
             robot.SetTargetPosition(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE, frontLeftTarget);
             robot.SetTargetPosition(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE, frontRightTarget);
@@ -440,6 +456,8 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
      *              If a relative angle is required, add/subtract from current heading.
      */
     public void turnToHeading(double maxTurnSpeed, double heading) {
+
+        Log.d(TAG_DRIVE,"turn To Heading; maxTurnSpeed: " + maxTurnSpeed + "heading: " + heading );
 
         // Run getSteeringCorrection() once to pre-calculate the current error
         getSteeringCorrection(heading, P_DRIVE_GAIN);
@@ -565,18 +583,23 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
     private void sendTelemetry(boolean straight) {
 
         if (straight) {
-            telemetry.addData("Motion", "Drive Straight");
+           Log.d(TAG_DRIVE,"Motion " + "Drive Straight " );
+          //  telemetry.addData("Motion", "Drive Straight");
             //telemetry.addData("Target Pos L:R",  "%7d:%7d",      leftTarget,  rightTarget);
            // telemetry.addData("Actual Pos L:R",  "%7d:%7d",      frontLeftDrive.getCurrentPosition(),
                     //frontRightDrive.getCurrentPosition());
-        } else {
-            telemetry.addData("Motion", "Turning");
-        }
 
-        telemetry.addData("Angle Target:Current", "%5.2f:%5.0f", targetHeading, robotHeading);
-        telemetry.addData("Error:Steer",  "%5.1f:%5.1f", headingError, turnSpeed);
-        telemetry.addData("Wheel Speeds L:R.", "%5.2f : %5.2f", leftSpeed, rightSpeed);
-        telemetry.update();
+        } else {
+            Log.d(TAG_DRIVE, "Motion " +"Turning ");
+           // telemetry.addData("Motion", "Turning");
+        }
+        Log.d(TAG_DRIVE, "Angle Targe;  Current " + targetHeading + " robot: " +  robotHeading);
+      Log.d(TAG_DRIVE,"Error:Steer " + headingError + " robot: " + turnSpeed);
+      Log.d(TAG_DRIVE,"Wheel Speeds L:R. " +leftSpeed + "robot " + rightSpeed);
+        //telemetry.addData("Angle Target:Current", "%5.2f:%5.0f", targetHeading, robotHeading);
+        //telemetry.addData("Error:Steer",  "%5.1f:%5.1f", headingError, turnSpeed);
+        //telemetry.addData("Wheel Speeds L:R.", "%5.2f : %5.2f", leftSpeed, rightSpeed);
+        //telemetry.update();
     }
 
     /**
@@ -584,6 +607,7 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
      */
     public double getRawHeading() {
         Orientation angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        Log.d(TAG_DRIVE," robot angle. " + angles.firstAngle);
         return angles.firstAngle;
     }
 
