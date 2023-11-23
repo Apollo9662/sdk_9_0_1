@@ -58,7 +58,7 @@ import java.util.concurrent.TimeUnit;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 @TeleOp(name = "Sensor: HuskyLens Apollo", group = "Sensor")
-@Disabled
+//@Disabled
 public class SensorHuskyLens_Apollo extends LinearOpMode {
 
     private final int READ_PERIOD = 1;
@@ -67,6 +67,7 @@ public class SensorHuskyLens_Apollo extends LinearOpMode {
     private boolean isPress = false;
     private enum HuskyLens_State {TAG_RECOGNITION,
                  COLOR_RECOGNITION};
+    HuskyLens.Block[] blocks;
 
     private HuskyLens_State huskyLensState;
     @Override
@@ -142,7 +143,7 @@ public class SensorHuskyLens_Apollo extends LinearOpMode {
              *
              * Returns an empty array if no objects are seen.
              */
-            HuskyLens.Block[] blocks = huskyLens.blocks();
+            blocks = huskyLens.blocks();
             if(gamepad1.a == true)
             {
                 if (isPress = false)
@@ -173,13 +174,12 @@ public class SensorHuskyLens_Apollo extends LinearOpMode {
             {
                 TAG_RECOGNITION();
             }
-//test
+
 
             telemetry.addData("Block count", blocks.length);
             for (int i = 0; i < blocks.length; i++) {
                 telemetry.addData("Block", blocks[i].toString());
             }
-
             telemetry.update();
         }
 
@@ -190,18 +190,18 @@ public class SensorHuskyLens_Apollo extends LinearOpMode {
     }
     private void COLOR_RECOGNITION()
     {
-        HuskyLens.Block[] blocks = huskyLens.blocks();
+        blocks = huskyLens.blocks();
         if(blocks.length != 0)
         {
             for (int i = 0; i < blocks.length; i++)
             {
-                if ((blocks[i].x < 176) && (blocks[i].x > 102))
+                if ((blocks[i].x > 88) && (blocks[i].x < 160) &&(blocks[i].y > 40) && (blocks[i].y < 60))
                 {
-                    telemetry.addLine("The Pixel is on line Top");
+                    telemetry.addLine("The Prop is on line Top");
                 }
-                else if ((blocks[i].x > 176) && (blocks[i].y > 79))
+                else if ((blocks[i].x > 217) && (blocks[i].x < 244) && (blocks[i].y < 192) && (blocks[i].y > 105))
                 {
-                    telemetry.addLine("The Pixel is on line Left");
+                    telemetry.addLine("The Prop is on line right");
                 }
             }
 
