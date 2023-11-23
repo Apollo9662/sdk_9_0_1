@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.util.Log;
+
 import com.qualcomm.hardware.dfrobot.HuskyLens;
 
 import org.firstinspires.ftc.robotcore.internal.system.Deadline;

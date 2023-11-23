@@ -166,77 +166,25 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
     public void runOpMode() {
 
         robot.init(hardwareMap);
-        robotHuskLens.initHuskyLens(robot.getHuskyLens());
+        boolean initHuskyLens = robotHuskLens.initHuskyLens(robot.getHuskyLens());
+        if (initHuskyLens == false)
+        {
+            telemetry.addLine("failed to init Husky lens");
+        }
         robot.ServoInit();
-        /*
-        // Initialize the drive system variables.
-        frontLeftDrive  = hardwareMap.get(DcMotor.class, "front_left_drive");
-        frontRightDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
-        backLeftDrive   = hardwareMap.get(DcMotor.class, "back_left_drive" );
-        backRightDrive  = hardwareMap.get(DcMotor.class, "back_right_drive");
-        armServo = hardwareMap.get(Servo.class, "collection_servo");//0
-        armGardServo = hardwareMap.get(Servo.class, "collection_gard_servo");
-        lift = hardwareMap.get(DcMotor.class, "lift");
-
-        // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
-        // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
-        // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
-        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
-        backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-        armServo.setDirection(Servo.Direction.FORWARD);
-        armGardServo.setDirection(Servo.Direction.FORWARD);
-        lift.setDirection(DcMotorSimple.Direction.REVERSE);
-         */
-
-        // define initialization values for IMU, and then initialize it.
-        //BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        //parameters.angleUnit            = BNO055IMU.AngleUnit.DEGREES;
-        //imu = hardwareMap.get(BNO055IMU.class, "imu");
-        //imu.initialize(parameters);
         robot.SetAllDriveMotorsMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        // Ensure the robot is stationary.  Reset the encoders and set the motors to BRAKE mode
-        /*
-        frontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-         */
         robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT, DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.SetAllDriveMotorsZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        //lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        /*
-        frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-         */
 
-        // Wait for the game to start (Display Gyro value while waiting)
-        while (opModeInInit()) {
-            telemetry.addData(">", "Robot Heading = %4.0f", getRawHeading());
-            telemetry.update();
-        }
-
-        // Set the encoders for closed loop speed control, and reset the heading.
         robot.SetAllDriveMotorsMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        /*
-        frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-         */
         robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT, DcMotor.RunMode.RUN_USING_ENCODER);
-        //lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         resetHeading();
+        telemetry.addLine("robot finish init");
+        telemetry.update();
 
-        // Step through each leg of the path,
-        // Notes:   Reverse movement is obtained by setting a negative distance (not speed)
-        //          holdHeading() is used after turns to let the heading stabilize
-        //          Add a sleep(2000) after any step to keep the telemetry data visible for review
-
+        waitForStart();
 
         TimeOut.reset();
         while ((detectedPropPos == null ) && (opModeIsActive() == true) && (TimeOut.seconds() < propDetectionTimeOut))
@@ -248,11 +196,13 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
             detectedPropPos = HuskyLens_Apollo.PropPos.RIGHT;
             //Log
             telemetry.addLine("failed ta detect Prop");
+            sleep(1000);
         }
         telemetry.addData("Prop pos is " , detectedPropPos.toString());
+        telemetry.update();
         while (opModeIsActive() == true)
         {
-            driveToProb(detectedPropPos);
+            //driveToProb(detectedPropPos);
         }
         //driveStraight();
         //driveLeft(DRIVE_SPEED, 10 ,0);
@@ -672,7 +622,7 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
                 break;
             case RIGHT:
                 time.reset();
-                driveStraight(DRIVE_SPEED, -23.5, 0.0);
+                driveStraight(DRIVE_SPEED, 23.5, 0.0);
                 turnToHeading(TURN_SPEED, -90);
                 robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO,robot.ARM_SERVO_DUMP_POS);
                 robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO,robot.ARM_SERVO_GARD_OPEN_CLOSE_POS);
@@ -701,7 +651,7 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
                 break;
             case LEFT:
                 time.reset();
-                driveStraight(DRIVE_SPEED, -23.5, 0.0);
+                driveStraight(DRIVE_SPEED, 23.5, 0.0);
                 turnToHeading(TURN_SPEED, 90);
                 robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO,robot.ARM_SERVO_DUMP_POS);
                 robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO,robot.ARM_SERVO_GARD_OPEN_CLOSE_POS);
@@ -731,4 +681,5 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
 
         }
     }
+    //private void
 }

@@ -132,6 +132,7 @@ public class RobotHardware_apollo {
             imu = apolloHardwareMap.get(BNO055IMU.class, "imu2");
             parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
             imu.initialize(parameters);
+            //log
         }
 
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
