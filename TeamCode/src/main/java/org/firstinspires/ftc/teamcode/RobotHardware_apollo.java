@@ -29,6 +29,8 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.dfrobot.HuskyLens;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -36,6 +38,11 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 /*
  * This file works in conjunction with the External Hardware Class sample called: ConceptExternalHardwareClass.java
@@ -62,11 +69,13 @@ public class RobotHardware_apollo {
     private LinearOpMode myOpMode = null;   // gain access to methods in the calling OpMode.
 
     // Define Motor and Servo objects  (Make them private so they can't be accessed externally)
-    private TouchSensor touchSensor1;
-    private TouchSensor touchSensor2;
-    private Servo armServo;
-    private Servo armGardServo;
-    private DcMotor backLeftDrive;
+    private HuskyLens huskyLens;
+    private BNO055IMU imu = null;
+    private TouchSensor touchSensor1 = null;
+    private TouchSensor touchSensor2 = null;
+    private Servo armServo = null;
+    private Servo armGardServo = null;
+    private DcMotor backLeftDrive = null;
     private DcMotor frontLeftDrive = null;
     private DcMotor frontRightDrive = null;
     private DcMotor backRightDrive = null;
@@ -112,6 +121,18 @@ public class RobotHardware_apollo {
         touchSensor2 = apolloHardwareMap.get(TouchSensor.class, "sensor_touch2");
         armServo = apolloHardwareMap.get(Servo.class, "collection_servo");//0
         armGardServo = apolloHardwareMap.get(Servo.class, "collection_gard_servo");
+        huskyLens = apolloHardwareMap.get(HuskyLens.class, "huskylens");
+
+        imu = apolloHardwareMap.get(BNO055IMU.class, "imu");
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        imu.initialize(parameters);
+        if (imu.initialize(parameters) == false)
+        {
+            imu = apolloHardwareMap.get(BNO055IMU.class, "imu2");
+            parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+            imu.initialize(parameters);
+        }
 
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -133,6 +154,11 @@ public class RobotHardware_apollo {
         armGardServo.setPosition(0.45);
         armServo.setPosition(0.72);
     }
+
+    public HuskyLens getHuskyLens() {
+        return huskyLens;
+    }
+
     public void SetPower(DriveMotors motor, double Power)
     {
         switch (motor)
@@ -381,6 +407,10 @@ public class RobotHardware_apollo {
         frontRightDrive.setZeroPowerBehavior(myZeroPowerBehavior);
         backRightDrive.setZeroPowerBehavior(myZeroPowerBehavior);
         backLeftDrive.setZeroPowerBehavior(myZeroPowerBehavior);
+    }
+    public double getImuRawHeading() {
+        Orientation angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        return angles.firstAngle;
     }
 
 

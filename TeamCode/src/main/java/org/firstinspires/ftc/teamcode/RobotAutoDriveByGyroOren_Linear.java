@@ -99,13 +99,16 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
 
     /* Declare OpMode members. */
     private ElapsedTime time = new ElapsedTime();
+    private ElapsedTime TimeOut = new ElapsedTime();
+    double propDetectionTimeOut = 5;
     final String TAG_TIME = "time";
     final String TAG_DRIVE = "drive";
 
-    enum ProbPos{UP,
-                RIGHT,
-                LEFT}
-    ProbPos probPos;
+    HuskyLens_Apollo.PropPos detectedPropPos = null;
+    //enum ProbPos{UP,
+                //RIGHT,
+                //LEFT}
+    //ProbPos probPos;
     //private DcMotor         frontLeftDrive   = null;
     //private DcMotor         frontRightDrive  = null;
     //private DcMotor         backLeftDrive    = null;
@@ -113,7 +116,7 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
     //private Servo armServo;
     //private Servo armGardServo;
     //public DcMotor lift = null;
-    private BNO055IMU       imu         = null;      // Control/Expansion Hub IMU
+    //private BNO055IMU       imu         = null;      // Control/Expansion Hub IMU
 
     private double          robotHeading  = 0;
     private double          headingOffset = 0;
@@ -157,11 +160,13 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
     static final double     P_DRIVE_GAIN           = 0.02;     // Larger is more responsive, but also less stable
 
     RobotHardware_apollo robot = new RobotHardware_apollo();
+    HuskyLens_Apollo robotHuskLens = new HuskyLens_Apollo();
 
     @Override
     public void runOpMode() {
 
         robot.init(hardwareMap);
+        robotHuskLens.initHuskyLens(robot.getHuskyLens());
         robot.ServoInit();
         /*
         // Initialize the drive system variables.
@@ -186,10 +191,10 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
          */
 
         // define initialization values for IMU, and then initialize it.
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit            = BNO055IMU.AngleUnit.DEGREES;
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);
+        //BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        //parameters.angleUnit            = BNO055IMU.AngleUnit.DEGREES;
+        //imu = hardwareMap.get(BNO055IMU.class, "imu");
+        //imu.initialize(parameters);
         robot.SetAllDriveMotorsMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         // Ensure the robot is stationary.  Reset the encoders and set the motors to BRAKE mode
         /*
@@ -233,8 +238,22 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
         //          Add a sleep(2000) after any step to keep the telemetry data visible for review
 
 
-
-        driveToProb(ProbPos.LEFT);
+        TimeOut.reset();
+        while ((detectedPropPos == null ) && (opModeIsActive() == true) && (TimeOut.seconds() < propDetectionTimeOut))
+        {
+            detectedPropPos = robotHuskLens.detectPropPos();
+        }
+        if (TimeOut.seconds() >= propDetectionTimeOut)
+        {
+            detectedPropPos = HuskyLens_Apollo.PropPos.RIGHT;
+            //Log
+            telemetry.addLine("failed ta detect Prop");
+        }
+        telemetry.addData("Prop pos is " , detectedPropPos.toString());
+        while (opModeIsActive() == true)
+        {
+            driveToProb(detectedPropPos);
+        }
         //driveStraight();
         //driveLeft(DRIVE_SPEED, 10 ,0);
   //driveStraight(DRIVE_SPEED, 20.5, 0.0);  // Drive Forward 17" at 45 degrees (-12"x and 12"y)
@@ -606,9 +625,9 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
      * read the raw (un-offset Gyro heading) directly from the IMU
      */
     public double getRawHeading() {
-        Orientation angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        Log.d(TAG_DRIVE," robot angle. " + angles.firstAngle);
-        return angles.firstAngle;
+        double angles = robot.getImuRawHeading();
+        Log.d(TAG_DRIVE," robot angle. " + angles);
+        return angles;
     }
 
     /**
@@ -619,7 +638,7 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
         headingOffset = getRawHeading();
         robotHeading = 0;
     }
-    public void driveToProb(ProbPos probPos)
+    public void driveToProb(HuskyLens_Apollo.PropPos probPos)
     {
         switch (probPos)
         {
@@ -666,8 +685,8 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
                 //armServo.setPosition(0.71);// Drive Forward 24"
                 //sleep(3000);
                 //turnToHeading( TURN_SPEED, -90.0);
+                driveRight(DRIVE_SPEED, -20, -90);
                 driveStraight(DRIVE_SPEED, -34, -90.0);
-                driveRight(DRIVE_SPEED, -5, -90);
                 //sleep(3000);
                 robot.SetTargetPosition(RobotHardware_apollo.DriveMotors.LIFT, 300);
                 robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT, DcMotor.RunMode.RUN_TO_POSITION);
@@ -697,7 +716,7 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
                 //sleep(3000);
                 //turnToHeading( TURN_SPEED, -90.0);
                 driveStraight(DRIVE_SPEED, -34, -90.0);
-                driveLeft(DRIVE_SPEED, -10, -90);
+                driveLeft(DRIVE_SPEED, -20, -90);
                 //sleep(3000);
                 robot.SetTargetPosition(RobotHardware_apollo.DriveMotors.LIFT, 1000);
                 robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT, DcMotor.RunMode.RUN_TO_POSITION);
