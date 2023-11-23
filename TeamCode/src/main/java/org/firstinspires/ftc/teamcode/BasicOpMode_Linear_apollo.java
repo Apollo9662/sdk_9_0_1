@@ -264,7 +264,7 @@ public class BasicOpMode_Linear_apollo extends LinearOpMode {
         if (upSideDownMod == true)
         {
             drive = gamepad1.left_stick_y;
-            turn = -gamepad1.right_stick_x;
+            turn = gamepad1.right_stick_x;
             sidePower = -gamepad1.left_stick_x;
         }
         else
