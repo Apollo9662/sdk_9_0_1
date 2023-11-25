@@ -68,7 +68,7 @@ public class BasicOpMode_Linear_apollo extends LinearOpMode {
 
 
     private ElapsedTime runtime = new ElapsedTime();
-    private  double collectionSpeed = 0.8;
+    private  double collectionSpeed = 0.7;
     boolean press = false;
     boolean pressCollection = false;
     boolean pressCollectionServo = false;
@@ -121,7 +121,7 @@ public class BasicOpMode_Linear_apollo extends LinearOpMode {
 
         armServoGardState = ArmServoGardState.CLOSE;
         robot.init(hardwareMap);
-        robot.ServoInit();
+        //robot.ServoInit();
         robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT, DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT, DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -393,16 +393,16 @@ public class BasicOpMode_Linear_apollo extends LinearOpMode {
                                 //liftTread.goTo(0);
 
                             }
-                        collection(1);
+                        collectionMotor(collectionSpeed);
                     }
                     else if (collectionR > 0)
                     {
-                        collection(-1);
+                        collectionMotor(-collectionSpeed);
                     }
                     //else if ((detection.tfod.getRecognitions().size() < 0))
                     else
                     {
-                        collection(0);
+                        collectionMotor(0);
                     }
                 }
             }  catch (Exception e)
@@ -414,7 +414,7 @@ public class BasicOpMode_Linear_apollo extends LinearOpMode {
 
 
 
-        public void collection (double speed)
+        public void collectionMotor (double speed)
         {
             robot.SetPower(RobotHardware_apollo.DriveMotors.COLLECTION, speed);
         }

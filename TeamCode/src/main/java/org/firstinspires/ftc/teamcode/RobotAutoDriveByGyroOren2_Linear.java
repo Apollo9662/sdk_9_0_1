@@ -90,8 +90,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  *  Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Robot: Auto Drive By Gyro Oren 2   ", group="Robot")
-//@Disabled
+@Autonomous(name="Apollo Autonomous old ", group="Apollo")
+@Disabled
 public class RobotAutoDriveByGyroOren2_Linear extends LinearOpMode {
 
     /* Declare OpMode members. */

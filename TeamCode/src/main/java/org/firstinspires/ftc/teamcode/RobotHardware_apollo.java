@@ -29,6 +29,8 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import android.util.Log;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.dfrobot.HuskyLens;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -69,6 +71,7 @@ public class RobotHardware_apollo {
     private LinearOpMode myOpMode = null;   // gain access to methods in the calling OpMode.
 
     // Define Motor and Servo objects  (Make them private so they can't be accessed externally)
+    final String TAG_HARDWARE = "HardwareApollo";
     private HuskyLens huskyLens;
     private BNO055IMU imu = null;
     private TouchSensor touchSensor1 = null;
@@ -131,8 +134,18 @@ public class RobotHardware_apollo {
         {
             imu = apolloHardwareMap.get(BNO055IMU.class, "imu2");
             parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-            imu.initialize(parameters);
-            //log
+            if (imu.initialize(parameters) == false)
+            {
+                Log.d(TAG_HARDWARE, "initialization of imu2 failed");
+            }
+            else
+            {
+                Log.d(TAG_HARDWARE, "initialization of imu2 succeeded");
+            }
+        }
+        else
+        {
+            Log.d(TAG_HARDWARE, "initialization of imu succeeded");
         }
 
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);

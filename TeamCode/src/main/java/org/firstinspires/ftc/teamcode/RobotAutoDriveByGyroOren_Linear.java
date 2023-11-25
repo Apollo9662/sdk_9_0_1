@@ -93,7 +93,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  *  Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Robot: Auto Drive By Gyro Oren    ", group="Robot")
+@Autonomous(name="Apollo Autonomous", group="Apollo")
 //@Disabled
 public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
 
@@ -166,7 +166,7 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
     public void runOpMode() {
 
         robot.init(hardwareMap);
-        boolean initHuskyLens = robotHuskLens.initHuskyLens(robot.getHuskyLens());
+        boolean initHuskyLens = robotHuskLens.initHuskyLens(robot.getHuskyLens(), HuskyLens_Apollo.PropColor.RED);
         if (initHuskyLens == false)
         {
             telemetry.addLine("failed to init Husky lens");
@@ -255,8 +255,6 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
                     "front right "+ robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE) +
                     "back left "+ robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE)+
                     "back left "+ robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE)) ;
-
-
             // Set Target FIRST, then turn on RUN_TO_POSITION
             robot.SetTargetPosition(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE, frontLeftTarget);
             robot.SetTargetPosition(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE, frontRightTarget);
