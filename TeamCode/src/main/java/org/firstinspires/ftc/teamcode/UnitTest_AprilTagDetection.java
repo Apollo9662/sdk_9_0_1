@@ -84,7 +84,7 @@ public class UnitTest_AprilTagDetection extends LinearOpMode
                 }
 
             }
-            if (gamepad1.x== true)
+            else if (gamepad1.x== true)
             {
                 if (press == false)
                 {
@@ -117,6 +117,10 @@ public class UnitTest_AprilTagDetection extends LinearOpMode
                     }
                 }
 
+            }
+            else
+            {
+                press = false;
             }
         }
     }
