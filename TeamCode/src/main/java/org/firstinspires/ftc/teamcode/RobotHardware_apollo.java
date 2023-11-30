@@ -165,8 +165,8 @@ public class RobotHardware_apollo {
     }
     public void ServoInit()
     {
-        armGardServo.setPosition(0.45);
-        armServo.setPosition(0.72);
+        armServo.setPosition(ARM_SERVO_COLLECT_POS);
+        armGardServo.setPosition(ARM_SERVO_GARD_OPEN_POS);
     }
 
     public HuskyLens getHuskyLens() {
