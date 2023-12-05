@@ -142,7 +142,7 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
     // For gearing UP, use a gear ratio less than 1.0. Note this will affect the direction of wheel rotation.
     static final double     COUNTS_PER_MOTOR_REV    = 537.7 ;   // eg: GoBILDA 312 RPM Yellow Jacket
     static final double     DRIVE_GEAR_REDUCTION    = 1.0;     // No External Gearing.
-    static final double     WHEEL_DIAMETER_INCHES   = 3.779528;     // For figuring circumference
+    static final double     WHEEL_DIAMETER_INCHES   = 3.7795275591;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
                                                       (WHEEL_DIAMETER_INCHES * 3.1415);
 
@@ -152,12 +152,13 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
     static final double     TURN_SPEED              = 0.35;     // Max Turn speed to limit turn rate
     static final double     HEADING_THRESHOLD       = 0.1;    // How close must the heading get to the target before moving to next step.
                                                                // Requiring more accuracy (a smaller number) will often make the turn take longer to get into the final position.
+                                                                //PLAY
     // Define the Proportional control coefficient (or GAIN) for "heading control".
     // We define one value when Turning (larger errors), and the other is used when Driving straight (smaller errors).
     // Increase these numbers if the heading does not corrects strongly enough (eg: a heavy robot or using tracks)
     // Decrease these numbers if the heading does not settle on the correct value (eg: very agile robot with omni wheels)
     static final double     P_TURN_GAIN            = 0.01;     // Larger is more responsive, but also less stable ; PLAY WITH THIS
-    static final double     P_DRIVE_GAIN           = 0.02;     // Larger is more responsive, but also less stable
+    static final double     P_DRIVE_GAIN           = 0.0001;     // Larger is more responsive, but also less stable
 
     RobotHardware_apollo robot = new RobotHardware_apollo();
     HuskyLens_Apollo robotHuskLens = new HuskyLens_Apollo();
@@ -187,6 +188,7 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
         waitForStart();
 
         TimeOut.reset();
+        /*
         while ((detectedPropPos == null ) && (opModeIsActive() == true) && (TimeOut.seconds() < propDetectionTimeOut))
         {
             detectedPropPos = robotHuskLens.detectPropPos();
@@ -204,7 +206,24 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
         {
             //driveToProb(detectedPropPos);
         }
-        //driveStraight();
+         */
+        driveStraight(DRIVE_SPEED, 23, 0 );
+
+        for (int i = 0; (i < 10) ; i++)
+        {
+            /*
+            driveStraight(DRIVE_SPEED, 25 * 2, 0);
+            turnToHeading(TURN_SPEED,-90);
+            driveStraight(DRIVE_SPEED, 23.5 * 5, -90 );
+            turnToHeading(TURN_SPEED,-180);
+            driveStraight(DRIVE_SPEED, 23.5 * 2, -180 );
+            turnToHeading(TURN_SPEED,-270);
+            driveStraight(DRIVE_SPEED, 23.5 * 5, -270 );
+            turnToHeading(TURN_SPEED,0);
+
+             */
+        }
+
         //driveLeft(DRIVE_SPEED, 10 ,0);
   //driveStraight(DRIVE_SPEED, 20.5, 0.0);  // Drive Forward 17" at 45 degrees (-12"x and 12"y)
         //turnToHeading( TURN_SPEED,   -90.0);               // Turn  CW  to 0 Degrees
@@ -244,7 +263,7 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
         if (opModeIsActive()) {
 
 
-            Log.d(TAG_DRIVE, "drive Straight; maxDriveSpeed: " + maxDriveSpeed + " distance: "+ distance + "heading: " + heading);
+            Log.d(TAG_DRIVE, "drive Straight; maxDriveSpeed: " + maxDriveSpeed + " distance: "+ distance + " heading: " + heading);
             // Determine new target position, and pass to motor controller
             int moveCounts = (int)(distance * COUNTS_PER_INCH);
             frontLeftTarget = (int) robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE) + moveCounts;
@@ -252,9 +271,13 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
             backLeftTarget = (int) robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE) + moveCounts;
             backRightTarget = (int)robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE) + moveCounts;
             Log.d(TAG_DRIVE,"Current Position; front left: " + robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE) +
-                    "front right "+ robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE) +
-                    "back left "+ robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE)+
-                    "back left "+ robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE)) ;
+                    " front right "+ robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE) +
+                    " back left "+ robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE)+
+                    " back right "+ robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE));
+            Log.d(TAG_DRIVE,"Go To Position; front left: " + frontLeftTarget +
+                    " front right "+ frontRightTarget +
+                    " back left "+ backLeftTarget+
+                    " back right "+ backRightTarget);
             // Set Target FIRST, then turn on RUN_TO_POSITION
             robot.SetTargetPosition(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE, frontLeftTarget);
             robot.SetTargetPosition(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE, frontRightTarget);
@@ -290,6 +313,17 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
 
             // Stop all motion & Turn off RUN_TO_POSITION
             moveRobot(0, 0);
+            Log.d(TAG_DRIVE,"Stopped!!!!!!!!!!!!!!!!!!");
+            Log.d(TAG_DRIVE,"Position at stop; front left: " + robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE) +
+                    " front right "+ robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE) +
+                    " back left "+ robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE)+
+                    " back right "+ robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE));
+            sleep(3000);
+            Log.d(TAG_DRIVE,"Position after stop;" +
+                    " front left: " + robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE) +
+                    " front right "+ robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE) +
+                    " back left "+ robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE)+
+                    " back right "+ robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE));
             robot.SetAllDriveMotorsMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
@@ -358,10 +392,11 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
             Log.d(TAG_DRIVE, "drive left; maxDriveSpeed: " + maxDriveSpeed + "distance:" + "distance: " + distance + "heading: "+ heading);
             // Determine new target position, and pass to motor controller
             int moveCounts = (int) (Math.abs(distance) * COUNTS_PER_INCH);
-            frontLeftTarget = (int) robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE) + moveCounts;
-            frontRightTarget = (int) robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE) - moveCounts;
-            backLeftTarget = (int) robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE) - moveCounts;
-            backRightTarget = (int)robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE) + moveCounts;
+            frontLeftTarget = (int) robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE) - moveCounts;
+            frontRightTarget = (int) robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE) + moveCounts;
+            backLeftTarget = (int) robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE) + moveCounts;
+            backRightTarget = (int)robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE) - moveCounts;
+
             Log.d(TAG_DRIVE,"Current Position; front left: " + robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE) +
                     "front right "+ robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE) +
                     "back left "+ robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE)+
@@ -535,7 +570,12 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
             frontLeftPower /= max;
             frontRightPower /= max;
         }
-
+        Log.d(TAG_DRIVE, "Wheel turn is " + turn);
+        Log.d(TAG_DRIVE,"Wheel Speeds is; " +
+                " back Left Power is " + backLeftPower +
+                " back Right Power is " + backRightPower +
+                " front Right Power" + frontRightPower +
+                " front Left Power" + frontLeftPower);
         robot.SetPower(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE, backLeftPower);
         robot.SetPower(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE, backRightPower);
         robot.SetPower(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE, frontRightPower);
@@ -562,7 +602,6 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
         }
         Log.d(TAG_DRIVE, "Angle Targe;  Current " + targetHeading + " robot: " +  robotHeading);
       Log.d(TAG_DRIVE,"Error:Steer " + headingError + " robot: " + turnSpeed);
-      Log.d(TAG_DRIVE,"Wheel Speeds L:R. " +leftSpeed + "robot " + rightSpeed);
         //telemetry.addData("Angle Target:Current", "%5.2f:%5.0f", targetHeading, robotHeading);
         //telemetry.addData("Error:Steer",  "%5.1f:%5.1f", headingError, turnSpeed);
         //telemetry.addData("Wheel Speeds L:R.", "%5.2f : %5.2f", leftSpeed, rightSpeed);
