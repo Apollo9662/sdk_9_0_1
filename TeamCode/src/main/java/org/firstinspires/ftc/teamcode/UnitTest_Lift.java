@@ -36,6 +36,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 /*
  * This file contains an example of a Linear "OpMode".
@@ -72,39 +73,51 @@ public class UnitTest_Lift extends LinearOpMode {
     // Declare OpMode members for each of the 4 motors.
 
     RobotHardware_apollo robot = new RobotHardware_apollo();
+    TouchSensor touchSensor;  // Touch sensor Object
+
 
     @Override
     public void runOpMode() {
         robot.init(hardwareMap);
+        touchSensor = hardwareMap.get(TouchSensor.class, "sensor_touch2");
+        robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT, DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         double POWER_LIFT = 1;
         double liftPower;
         waitForStart();
-        while (opModeIsActive())
-        {
+        while (opModeIsActive()) {
 
-            int Pos = (int) robot.GetCurrentPosition( RobotHardware_apollo.DriveMotors.LIFT);
+            int Pos = (int) robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.LIFT);
+            while (opModeIsActive()) {
 
-            if(gamepad1.a == true)
-            {
-                //lift.setTargetPosition(Pos + 100);
-                //lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                liftPower = POWER_LIFT;
+                // send the info back to driver station using telemetry function.
+
+
+                //telemetry.update();
+
+
+                if (gamepad1.a == true) {
+                    //lift.setTargetPosition(Pos + 100);
+                    //lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    liftPower = POWER_LIFT;
+                } else if (gamepad1.y == true) {
+                    //lift.setTargetPosition(Pos - 100);
+                    //lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    liftPower = -POWER_LIFT;
+                } else {
+                    liftPower = 0;
+                }
+                if (touchSensor.isPressed()) {
+                    telemetry.addData("Touch Sensor", "Is Pressed");
+                } else {
+                    telemetry.addData("Touch Sensor", "Is Not Pressed");
+                }
+                robot.SetPower(RobotHardware_apollo.DriveMotors.LIFT, liftPower);
+                telemetry.addData("Power is ", "(%.2f)" + robot.GetPower(RobotHardware_apollo.DriveMotors.LIFT));
+                telemetry.addData("current position ", "(%.2f)" + robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.LIFT));
+                telemetry.update();
             }
-            else if(gamepad1.y == true)
-            {
-                //lift.setTargetPosition(Pos - 100);
-                //lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                liftPower = -POWER_LIFT;
-            }
-            else
-            {
-                liftPower = 0;
-            }
-            robot.SetPower(RobotHardware_apollo.DriveMotors.LIFT, liftPower);
-            telemetry.addData("Power is ","(%.2f)" + robot.GetPower(RobotHardware_apollo.DriveMotors.LIFT));
-            telemetry.addData("current position ","(%.2f)" + robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.LIFT));
-            telemetry.update();
         }
+
     }
 }
-
