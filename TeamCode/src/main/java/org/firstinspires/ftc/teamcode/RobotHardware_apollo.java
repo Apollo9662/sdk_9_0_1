@@ -35,8 +35,10 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.dfrobot.HuskyLens;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.Range;
@@ -78,12 +80,12 @@ public class RobotHardware_apollo {
     private TouchSensor touchSensor2 = null;
     private Servo armServo = null;
     private Servo armGardServo = null;
-    private DcMotor backLeftDrive = null;
-    private DcMotor frontLeftDrive = null;
-    private DcMotor frontRightDrive = null;
-    private DcMotor backRightDrive = null;
-    private DcMotor collection = null;
-    public DcMotor lift = null; // private
+    private DcMotorEx backLeftDrive = null;
+    private DcMotorEx frontLeftDrive = null;
+    private DcMotorEx frontRightDrive = null;
+    private DcMotorEx backRightDrive = null;
+    private DcMotorEx collection = null;
+    public DcMotorEx lift = null; // private
     public DriveMotors driveMotors;
     public enum DriveMotors {BACK_LEFT_DRIVE,
             FRONT_LEFT_DRIVE,
@@ -114,12 +116,12 @@ public class RobotHardware_apollo {
     public void init(HardwareMap apolloHardwareMap)
     {
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
-        backLeftDrive = apolloHardwareMap.get(DcMotor.class, "back_left_drive"); //0
-        frontLeftDrive = apolloHardwareMap.get(DcMotor.class, "front_left_drive"); //1
-        backRightDrive = apolloHardwareMap.get(DcMotor.class, "back_right_drive"); //2
-        frontRightDrive = apolloHardwareMap.get(DcMotor.class, "front_right_drive");//3
-        collection = apolloHardwareMap.get(DcMotor.class, "collection");//0
-        lift = apolloHardwareMap.get(DcMotor.class, "lift");//2
+        backLeftDrive = apolloHardwareMap.get(DcMotorEx.class, "back_left_drive"); //0
+        frontLeftDrive = apolloHardwareMap.get(DcMotorEx.class, "front_left_drive"); //1
+        backRightDrive = apolloHardwareMap.get(DcMotorEx.class, "back_right_drive"); //2
+        frontRightDrive = apolloHardwareMap.get(DcMotorEx.class, "front_right_drive");//3
+        collection = apolloHardwareMap.get(DcMotorEx.class, "collection");//0
+        lift = apolloHardwareMap.get(DcMotorEx.class, "lift");//2
         touchSensor1 = apolloHardwareMap.get(TouchSensor.class, "sensor_touch1");
         touchSensor2 = apolloHardwareMap.get(TouchSensor.class, "sensor_touch2");
         armServo = apolloHardwareMap.get(Servo.class, "collection_servo");//0
@@ -152,7 +154,7 @@ public class RobotHardware_apollo {
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         backRightDrive.setDirection(DcMotor.Direction.FORWARD);
         frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
-        collection.setDirection(DcMotorSimple.Direction.FORWARD);
+        collection.setDirection(DcMotorSimple.Direction.REVERSE);
         lift.setDirection(DcMotorSimple.Direction.REVERSE);
         armServo.setDirection(Servo.Direction.FORWARD);
         armGardServo.setDirection(Servo.Direction.FORWARD);
@@ -160,6 +162,7 @@ public class RobotHardware_apollo {
         backRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        collection.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         collection.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
@@ -167,6 +170,13 @@ public class RobotHardware_apollo {
     {
         armServo.setPosition(ARM_SERVO_COLLECT_POS);
         armGardServo.setPosition(ARM_SERVO_GARD_OPEN_POS);
+    }
+    public void ImuInit()
+    {
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.mode = BNO055IMU.SensorMode.IMU;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
     }
 
     public HuskyLens getHuskyLens() {
@@ -213,6 +223,46 @@ public class RobotHardware_apollo {
                 break;
         }
     }
+    public void SetVelocity(DriveMotors motor, double Power)
+    {
+        switch (motor)
+        {
+
+            case BACK_LEFT_DRIVE:
+            {
+                backLeftDrive.setVelocity(Power);
+            }
+            break;
+            case BACK_RIGHT_DRIVE:
+            {
+                backRightDrive.setVelocity(Power);
+            }
+            break;
+            case FRONT_LEFT_DRIVE:
+            {
+                frontLeftDrive.setVelocity(Power);
+            }
+            break;
+            case FRONT_RIGHT_DRIVE:
+            {
+                frontRightDrive.setVelocity(Power);
+            }
+            break;
+            case LIFT:
+            {
+                lift.setVelocity(Power);
+            }
+            break;
+            case COLLECTION:
+            {
+                collection.setVelocity(Power);
+            }
+
+            break;
+            default:
+                break;
+        }
+    }
     public double GetPower(DriveMotors motor)
     {
         switch (motor) {
@@ -245,6 +295,70 @@ public class RobotHardware_apollo {
                 return (0);
         }
     }
+    public PIDFCoefficients GetPIDFCoefficients(DriveMotors motor, DcMotor.RunMode myMode)
+    {
+        switch (motor) {
+
+            case BACK_LEFT_DRIVE:
+            {
+                return backLeftDrive.getPIDFCoefficients(myMode);
+            }
+            case BACK_RIGHT_DRIVE:
+            {
+                return backRightDrive.getPIDFCoefficients(myMode);
+            }
+            case FRONT_LEFT_DRIVE:
+            {
+                return frontLeftDrive.getPIDFCoefficients(myMode);
+            }
+            case FRONT_RIGHT_DRIVE:
+            {
+                return frontRightDrive.getPIDFCoefficients(myMode);
+            }
+            case LIFT:
+            {
+                return lift.getPIDFCoefficients(myMode);
+            }
+            case COLLECTION:
+            {
+                return collection.getPIDFCoefficients(myMode);
+            }
+            default:
+                return (null);
+        }
+    }
+    public double GetVelocity(DriveMotors motor)
+    {
+        switch (motor) {
+
+            case BACK_LEFT_DRIVE:
+            {
+                return backLeftDrive.getVelocity();
+            }
+            case BACK_RIGHT_DRIVE:
+            {
+                return backRightDrive.getVelocity();
+            }
+            case FRONT_LEFT_DRIVE:
+            {
+                return frontLeftDrive.getVelocity();
+            }
+            case FRONT_RIGHT_DRIVE:
+            {
+                return frontRightDrive.getVelocity();
+            }
+            case LIFT:
+            {
+                return lift.getVelocity();
+            }
+            case COLLECTION:
+            {
+                return collection.getVelocity();
+            }
+            default:
+                return (0);
+        }
+    }
     public double GetCurrentPosition(DriveMotors motor)
     {
         switch (motor) {
@@ -260,6 +374,10 @@ public class RobotHardware_apollo {
             }
             case FRONT_RIGHT_DRIVE: {
                 return (frontRightDrive.getCurrentPosition());
+            }
+            case COLLECTION:
+            {
+                return (collection.getCurrentPosition());
             }
             case LIFT:
             {
@@ -325,6 +443,10 @@ public class RobotHardware_apollo {
                 frontRightDrive.setMode(myMode);
             }
             break;
+            case COLLECTION:
+            {
+                collection.setMode(myMode);
+            }
             case LIFT: {
                 lift.setMode(myMode);
             }

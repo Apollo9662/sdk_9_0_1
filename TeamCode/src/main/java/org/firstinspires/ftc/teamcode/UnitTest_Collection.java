@@ -17,6 +17,8 @@ public class UnitTest_Collection extends LinearOpMode {
     public void runOpMode()
     {
         robot.init(hardwareMap);
+        robot.SetMode(RobotHardware_apollo.DriveMotors.COLLECTION, DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.SetMode(RobotHardware_apollo.DriveMotors.COLLECTION, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         waitForStart();
         while (opModeIsActive())
         {
@@ -32,7 +34,10 @@ public class UnitTest_Collection extends LinearOpMode {
             {
                 robot.SetPower(RobotHardware_apollo.DriveMotors.COLLECTION , 0);
             }
+            telemetry.addData("Current Position is " ,"(%.2f)" , robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.COLLECTION));
+            telemetry.update();
         }
+
     }
 }
 

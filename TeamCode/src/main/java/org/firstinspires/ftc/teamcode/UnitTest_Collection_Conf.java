@@ -62,7 +62,8 @@ public class UnitTest_Collection_Conf extends LinearOpMode {
                 press = false;
             }
 
-             telemetry.addData("power is ", "%1.2f" ,  power);
+            telemetry.addData("Current Position is " ,"(%.2f)" , robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.COLLECTION));
+            telemetry.addData("power is ", "%1.2f" ,  power);
             telemetry.update();
         }
     }

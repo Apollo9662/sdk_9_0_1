@@ -149,8 +149,8 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
     // These constants define the desired driving/control characteristics
     // They can/should be tweaked to suit the specific robot drive train.
     static final double     DRIVE_SPEED             = 0.70;     // Max driving speed for better distance accuracy.
-    static final double     TURN_SPEED              = 0.35;     // Max Turn speed to limit turn rate
-    static final double     HEADING_THRESHOLD       = 0.1;    // How close must the heading get to the target before moving to next step.
+    static final double     TURN_SPEED              = 0.25;     // Max Turn speed to limit turn rate
+    static final double     HEADING_THRESHOLD       = 0.001;    // How close must the heading get to the target before moving to next step.
                                                                // Requiring more accuracy (a smaller number) will often make the turn take longer to get into the final position.
                                                                 //PLAY
     // Define the Proportional control coefficient (or GAIN) for "heading control".
@@ -207,21 +207,21 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
             //driveToProb(detectedPropPos);
         }
          */
-        driveStraight(DRIVE_SPEED, 23, 0 );
+        //driveStraight(DRIVE_SPEED, 23 * 5, 0 );
 
+        driveRight(DRIVE_SPEED,7,0);
         for (int i = 0; (i < 10) ; i++)
         {
-            /*
-            driveStraight(DRIVE_SPEED, 25 * 2, 0);
+            driveStraight(DRIVE_SPEED, 23 * 2 + 5, 0);
+            driveStraight(DRIVE_SPEED, 2, 0 );
+            //driveStraight(DRIVE_SPEED, 5, 0);
             turnToHeading(TURN_SPEED,-90);
-            driveStraight(DRIVE_SPEED, 23.5 * 5, -90 );
+            driveStraight(DRIVE_SPEED, 23 * 5, -90 );
             turnToHeading(TURN_SPEED,-180);
-            driveStraight(DRIVE_SPEED, 23.5 * 2, -180 );
+            driveStraight(DRIVE_SPEED, 23 * 2, -180 );
             turnToHeading(TURN_SPEED,-270);
-            driveStraight(DRIVE_SPEED, 23.5 * 5, -270 );
+            driveStraight(DRIVE_SPEED, 23 * 5, -270 );
             turnToHeading(TURN_SPEED,0);
-
-             */
         }
 
         //driveLeft(DRIVE_SPEED, 10 ,0);

@@ -43,6 +43,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcontroller.external.samples.RobotHardware;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.tensorflow.lite.task.vision.detector.ObjectDetector;
 
@@ -66,6 +70,10 @@ import java.util.List;
 //@Disabled
 public class BasicOpMode_Linear_apollo extends LinearOpMode {
 
+    Orientation angles = new Orientation();
+
+    double initYaw;
+    double adjustYaw;
 
     private ElapsedTime runtime = new ElapsedTime();
     private  double collectionSpeed = 0.7;
@@ -120,8 +128,12 @@ public class BasicOpMode_Linear_apollo extends LinearOpMode {
         telemetry.update();
 
         armServoGardState = ArmServoGardState.CLOSE;
+        robot.ImuInit();
         robot.init(hardwareMap);
         //robot.ServoInit();
+        //angles = imu.getAngularOrientation(AxesReference.INTRINSIC,
+          //      AxesOrder.ZYX, AngleUnit.DEGREES);
+        initYaw = angles.firstAngle;
         robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT, DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT, DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -347,8 +359,8 @@ public class BasicOpMode_Linear_apollo extends LinearOpMode {
 
                 while ((opModeIsActive()) && (!isInterrupted()))
                 {
-                    double collectionF = gamepad2.right_trigger;
-                    double collectionR = gamepad2.left_trigger;
+                    double collectionR = gamepad2.right_trigger;
+                    double collectionF = gamepad2.left_trigger;
                     boolean collectPixel = gamepad2.left_bumper;
                     boolean dumpPixel =  gamepad2.right_bumper;
                     //boolean doNotGoDownSwitch = gamepad2.right_bumper;
