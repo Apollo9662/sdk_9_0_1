@@ -1,15 +1,16 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-
+@Config
 @TeleOp(name="UnitTest Collection Conf", group="Unit Test")
 //@Disabled
 public class UnitTest_Collection_Conf extends LinearOpMode {
     private DcMotor Collection = null;
     RobotHardware_apollo robot = new RobotHardware_apollo();
-    double power = 1;
+    public static double power = 1;
     boolean press;
 
 

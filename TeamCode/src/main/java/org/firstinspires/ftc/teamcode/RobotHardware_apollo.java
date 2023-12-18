@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 import android.util.Log;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.dfrobot.HuskyLens;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -86,7 +87,7 @@ public class RobotHardware_apollo {
     private DcMotorEx backRightDrive = null;
     private DcMotorEx collection = null;
     public DcMotorEx lift = null; // private
-    public DriveMotors driveMotors;
+    public static DriveMotors driveMotors;
     public enum DriveMotors {BACK_LEFT_DRIVE,
             FRONT_LEFT_DRIVE,
             FRONT_RIGHT_DRIVE,
