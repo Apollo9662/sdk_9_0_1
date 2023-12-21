@@ -31,6 +31,10 @@ package org.firstinspires.ftc.teamcode;
 
 import android.util.Log;
 
+import com.arcrobotics.ftclib.drivebase.MecanumDrive;
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -70,10 +74,8 @@ import java.util.List;
 //@Disabled
 public class BasicOpMode_Linear_apollo extends LinearOpMode {
 
-    Orientation angles = new Orientation();
+    private GamepadEx driveOp;
 
-    double initYaw;
-    double adjustYaw;
 
     private ElapsedTime runtime = new ElapsedTime();
     private  double collectionSpeed = 0.7;
@@ -120,20 +122,23 @@ public class BasicOpMode_Linear_apollo extends LinearOpMode {
     boolean stayInPosIsActive = false;
     //ConceptTensorFlowObjectDetection_Apollo detection;
     RobotHardware_apollo robot = new RobotHardware_apollo();
+    RobotHardware_apollo_FtcLib robot_Ftclib = new RobotHardware_apollo_FtcLib();
 
 
     @Override
     public void runOpMode() {
+        driveOp = new GamepadEx(gamepad1);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
         armServoGardState = ArmServoGardState.CLOSE;
-        robot.ImuInit();
-        robot.init(hardwareMap);
+        robot.init(hardwareMap, false, false);
+        robot_Ftclib.init(hardwareMap);
         //robot.ServoInit();
         //angles = imu.getAngularOrientation(AxesReference.INTRINSIC,
           //      AxesOrder.ZYX, AngleUnit.DEGREES);
-        initYaw = angles.firstAngle;
+        //robot.initMecanumDriveBase();
+        robot_Ftclib.SetAllMotorsZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT, DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT, DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -270,71 +275,29 @@ public class BasicOpMode_Linear_apollo extends LinearOpMode {
 
     private void drive()
     {
-        double drive;
-        double turn;
-        double sidePower;
-        if (upSideDownMod == true)
+        double forwardSpeed;
+        double turnSpeed;
+        double strafeSpeed;
+        forwardSpeed   = -driveOp.getLeftY();  // Note: pushing stick forward gives negative value
+        strafeSpeed =  -driveOp.getLeftX();
+        turnSpeed     =  -driveOp.getRightX();
+        double heading = robot_Ftclib.getRobotYawPitchRollAngles();
+
+        if ((driveOp.isDown(GamepadKeys.Button.LEFT_STICK_BUTTON)) || driveOp.isDown((GamepadKeys.Button.RIGHT_STICK_BUTTON)))
         {
-            drive = gamepad1.left_stick_y;
-            turn = gamepad1.right_stick_x;
-            sidePower = -gamepad1.left_stick_x;
+            controlMod = true;
         }
         else
         {
-            drive = -gamepad1.left_stick_y;
-            turn  =  gamepad1.right_stick_x;
-            sidePower = gamepad1.left_stick_x;
-        }
-        boolean controlModSwitch = gamepad1.x;
-        boolean upSideDownModSwitch = gamepad1.b;
-        double backLeftPower  = drive + turn - sidePower;
-        double backRightPower = drive - turn + sidePower;
-        double frontRightPower = drive - turn - sidePower;
-        double frontLeftPower = drive + turn + sidePower;
-
-        double maxFront = Math.max(Math.abs(frontLeftPower), Math.abs(frontRightPower));
-        double maxBack = Math.max (Math.abs(backLeftPower), Math.abs(backRightPower));
-        double max = Math.max(maxFront, maxBack);
-        if (max > 1)
-        {
-            backLeftPower /= max;
-            backRightPower /= max;
-            frontLeftPower /= max;
-            frontRightPower /= max;
-        }
-        if (upSideDownModSwitch == true)
-        {
-            if (pressDrive == false)
-            {
-                pressDrive = true;
-                upSideDownMod = !upSideDownMod;
-            }
-        }
-        else if (controlModSwitch == true)
-        {
-            if (pressDrive == false)
-            {
-                pressDrive = true;
-                controlMod = !controlMod;
-            }
-        }
-        if ((controlModSwitch == false) && (upSideDownModSwitch == false))
-        {
-            pressDrive = false;
+            controlMod = false;
         }
         if (controlMod == true)
         {
-            robot.SetPower(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE , backLeftPower/2);
-            robot.SetPower(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE ,backRightPower/2);
-            robot.SetPower(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE ,frontRightPower/2);
-            robot.SetPower(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE ,frontLeftPower/2);
+            robot_Ftclib.driveFieldCentric(strafeSpeed/2, forwardSpeed/2, turnSpeed/2, heading);
         }
         else
         {
-            robot.SetPower(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE , backLeftPower);
-            robot.SetPower(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE ,backRightPower);
-            robot.SetPower(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE ,frontRightPower);
-            robot.SetPower(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE ,frontLeftPower);
+            robot_Ftclib.driveFieldCentric(strafeSpeed, forwardSpeed, turnSpeed, heading);
         }
 
 
