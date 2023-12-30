@@ -115,10 +115,17 @@ public class RobotHardware_apollo_FtcLib {
     public void init(HardwareMap apolloHardwareMap)
     {
         imu = apolloHardwareMap.get(IMU.class, "imu");
-        imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(
+        boolean imuInitialize = imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
                 RevHubOrientationOnRobot.UsbFacingDirection.UP
         )));
+
+        if (imuInitialize)
+        {
+
+        }
+
+
         imu.resetYaw();
 
         frontLeftDrive = new Motor(apolloHardwareMap, "front_left_drive");
@@ -145,6 +152,10 @@ public class RobotHardware_apollo_FtcLib {
     public void driveFieldCentric(double strafeSpeed, double forwardSpeed, double turnSpeed, double heading)
     {
         mecanumDriveBase.driveFieldCentric(strafeSpeed, forwardSpeed, turnSpeed, heading);
+    }
+    public void driveRobotCentric(double strafeSpeed, double forwardSpeed, double turnSpeed)
+    {
+        mecanumDriveBase.driveRobotCentric(strafeSpeed, forwardSpeed, turnSpeed);
     }
     public double getRobotYawPitchRollAngles()
     {

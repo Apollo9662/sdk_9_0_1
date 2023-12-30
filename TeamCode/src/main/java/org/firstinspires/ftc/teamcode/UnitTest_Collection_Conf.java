@@ -19,7 +19,7 @@ public class UnitTest_Collection_Conf extends LinearOpMode {
     @Override
     public void runOpMode()
     {
-        robot.init(hardwareMap);
+        robot.init(hardwareMap,false,false);
         waitForStart();
         while (opModeIsActive())
         {

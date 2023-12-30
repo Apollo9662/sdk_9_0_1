@@ -72,6 +72,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 public class RobotHardware_apollo {
 
     private MecanumDrive mecanumDriveBase;
+    enum ArmServoGardState{OPEN,
+        CLOSE,
+        OPEN_CLOSE}
+    ArmServoGardState armServoGardState;
+    enum ArmServoState{COLLECT,
+        DUMP}
+    ArmServoState armServoState;
     /* Declare OpMode members. */
     private LinearOpMode myOpMode = null;   // gain access to methods in the calling OpMode.
     // Define Motor and Servo objects  (Make them private so they can't be accessed externally)
@@ -99,11 +106,12 @@ public class RobotHardware_apollo {
             TOUCH_SENSOR2,
             LIFT,
             COLLECTION};
-    final public double ARM_SERVO_COLLECT_POS = 0.71;
-    final public double ARM_SERVO_DUMP_POS = 0.25;
-    final public double ARM_SERVO_GARD_OPEN_POS = 0.15;
-    final public double ARM_SERVO_GARD_CLOSE_POS = 0.45;
-    final public double ARM_SERVO_GARD_OPEN_CLOSE_POS = 0.3;
+    public double ARM_SERVO_COLLECT_POS = 0.2;
+    public double ARM_SERVO_DUMP_POS = 0.8;
+
+    final public double ARM_SERVO_GARD_OPEN_POS = 0;
+    final public double ARM_SERVO_GARD_CLOSE_POS = 0.32;
+    final public double ARM_SERVO_GARD_OPEN_CLOSE_POS = 0.13;
     // Define a constructor that allows the OpMode to pass a reference to itself.
     //public RobotHardware_apollo(LinearOpMode opmode) {
         //myOpMode = opmode;
@@ -126,7 +134,11 @@ public class RobotHardware_apollo {
             backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
             frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
             backRightDrive.setDirection(DcMotor.Direction.FORWARD);
-            frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
+            frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
+            backLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            backRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            frontRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            frontLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
         if (initImu)
         {
@@ -161,17 +173,13 @@ public class RobotHardware_apollo {
         armServo = apolloHardwareMap.get(Servo.class, "collection_servo");//0
         armGardServo = apolloHardwareMap.get(Servo.class, "collection_gard_servo");
         huskyLens = apolloHardwareMap.get(HuskyLens.class, "huskylens");
-
         collection.setDirection(DcMotorSimple.Direction.REVERSE);
         lift.setDirection(DcMotorSimple.Direction.REVERSE);
         armServo.setDirection(Servo.Direction.FORWARD);
         armGardServo.setDirection(Servo.Direction.FORWARD);
-        backLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         collection.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         collection.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
     public void SetAllMotorsZeroPowerBehavior(DcMotor.ZeroPowerBehavior myZeroPowerBehavior)
@@ -183,8 +191,11 @@ public class RobotHardware_apollo {
     }
     public void ServoInit()
     {
+        armServoState = ArmServoState.COLLECT;
+        armServoGardState = ArmServoGardState.OPEN;
         armServo.setPosition(ARM_SERVO_COLLECT_POS);
         armGardServo.setPosition(ARM_SERVO_GARD_OPEN_POS);
+
     }
     public void ImuInit()
     {

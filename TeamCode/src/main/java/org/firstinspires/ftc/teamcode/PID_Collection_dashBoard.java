@@ -35,7 +35,7 @@ public class PID_Collection_dashBoard extends OpMode {
 
         controller = new PIDController(Kp, Ki, Kd);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        robot.init(hardwareMap);
+        robot.init(hardwareMap, false,false);
 
     }
 

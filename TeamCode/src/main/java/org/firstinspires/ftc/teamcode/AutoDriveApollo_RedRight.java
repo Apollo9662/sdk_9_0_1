@@ -31,20 +31,11 @@ package org.firstinspires.ftc.teamcode;
 
 import android.util.Log;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 /**
  *  This file illustrates the concept of driving an autonomous path based on Gyro heading and encoder counts.
@@ -93,9 +84,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  *  Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Apollo Autonomous", group="Apollo")
+@Autonomous(name="Apollo Autonomous Red", group="Apollo")
 //@Disabled
-public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
+public class AutoDriveApollo_RedRight extends LinearOpMode {
 
     /* Declare OpMode members. */
     private ElapsedTime time = new ElapsedTime();
@@ -189,7 +180,7 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
         waitForStart();
 
         TimeOut.reset();
-        /*
+
         while ((detectedPropPos == null ) && (opModeIsActive() == true) && (TimeOut.seconds() < propDetectionTimeOut))
         {
             detectedPropPos = robotHuskLens.detectPropPos();
@@ -205,9 +196,8 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
         telemetry.update();
         while (opModeIsActive() == true)
         {
-            //driveToProb(detectedPropPos);
+            driveToProb(detectedPropPos);
         }
-         */
         //driveStraight(DRIVE_SPEED, 23 * 5, 0 );
 
 
@@ -643,89 +633,28 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
         {
             case UP:
                 time.reset();
-                driveStraight(DRIVE_SPEED, 23.5, 0.0);
-                turnToHeading( TURN_SPEED, 180.0);
-                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO,robot.ARM_SERVO_DUMP_POS);
-                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO,robot.ARM_SERVO_GARD_OPEN_CLOSE_POS);
-                //armServo.setPosition(0.25);
-                //armGardServo.setPosition(0.3);
-                sleep(600);
-                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO,robot.ARM_SERVO_GARD_CLOSE_POS);
-                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO,robot.ARM_SERVO_COLLECT_POS);
-                //armGardServo.setPosition(0.45);
-                //armServo.setPosition(0.71);// Drive Forward 24"
-                //sleep(3000);
-                turnToHeading( TURN_SPEED, -90.0);
-                driveStraight(DRIVE_SPEED, -34, -90.0);
-                //sleep(3000);
-                robot.SetTargetPosition(RobotHardware_apollo.DriveMotors.LIFT, 300);
-                robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT, DcMotor.RunMode.RUN_TO_POSITION);
-                robot.SetPower(RobotHardware_apollo.DriveMotors.LIFT, 1);
-                //lift.setTargetPosition(300);
-                //lift.setPower(1);
-                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO,robot.ARM_SERVO_DUMP_POS);
-                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO,robot.ARM_SERVO_GARD_OPEN_POS);
-                //armServo.setPosition(0.25);
-                //armGardServo.setPosition(0.15);
+                driveStraight(DRIVE_SPEED,23,0);
+                turnToHeadingApollo(TURN_SPEED,90);
+                //Todo: add drop pixel function
+                turnToHeadingApollo(TURN_SPEED,270);
+                //Todo: add drop drive to back drop function
                 Log.d(TAG_TIME, "the final time is " + time.milliseconds());
                 break;
             case RIGHT:
                 time.reset();
-                driveStraight(DRIVE_SPEED, 23.5, 0.0);
-                turnToHeading(TURN_SPEED, -90);
-                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO,robot.ARM_SERVO_DUMP_POS);
-                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO,robot.ARM_SERVO_GARD_OPEN_CLOSE_POS);
-                //armServo.setPosition(0.25);
-                //armGardServo.setPosition(0.3);
-                sleep(600);
-                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO,robot.ARM_SERVO_GARD_CLOSE_POS);
-                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO,robot.ARM_SERVO_COLLECT_POS);
-                //armGardServo.setPosition(0.45);
-                //armServo.setPosition(0.71);// Drive Forward 24"
-                //sleep(3000);
-                //turnToHeading( TURN_SPEED, -90.0);
-                driveRight(DRIVE_SPEED, -20, -90);
-                driveStraight(DRIVE_SPEED, -34, -90.0);
-                //sleep(3000);
-                robot.SetTargetPosition(RobotHardware_apollo.DriveMotors.LIFT, 300);
-                robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT, DcMotor.RunMode.RUN_TO_POSITION);
-                robot.SetPower(RobotHardware_apollo.DriveMotors.LIFT, 1);
-                //lift.setTargetPosition(300);
-                //lift.setPower(1);
-                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO,robot.ARM_SERVO_DUMP_POS);
-                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO,robot.ARM_SERVO_GARD_OPEN_POS);
-                //armServo.setPosition(0.25);
-                //armGardServo.setPosition(0.15);
+                driveStraight(DRIVE_SPEED,23,0);
+                turnToHeadingApollo(TURN_SPEED,180);
+                //Todo: add drop pixel function
+                turnToHeadingApollo(TURN_SPEED,270);
+                //Todo: add drop drive to back drop function
                 Log.d(TAG_TIME, "the final time is " + time.milliseconds());
                 break;
             case LEFT:
                 time.reset();
-                driveStraight(DRIVE_SPEED, 23.5, 0.0);
-                turnToHeading(TURN_SPEED, 90);
-                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO,robot.ARM_SERVO_DUMP_POS);
-                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO,robot.ARM_SERVO_GARD_OPEN_CLOSE_POS);
-                //armServo.setPosition(0.25);
-                //armGardServo.setPosition(0.3);
-                sleep(600);
-                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO,robot.ARM_SERVO_GARD_CLOSE_POS);
-                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO,robot.ARM_SERVO_COLLECT_POS);
-                //armGardServo.setPosition(0.45);
-                //armServo.setPosition(0.71);// Drive Forward 24"
-                turnToHeading(TURN_SPEED, -90);
-                //sleep(3000);
-                //turnToHeading( TURN_SPEED, -90.0);
-                driveStraight(DRIVE_SPEED, -34, -90.0);
-                driveLeft(DRIVE_SPEED, -20, -90);
-                //sleep(3000);
-                robot.SetTargetPosition(RobotHardware_apollo.DriveMotors.LIFT, 1000);
-                robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT, DcMotor.RunMode.RUN_TO_POSITION);
-                robot.SetPower(RobotHardware_apollo.DriveMotors.LIFT, 1);
-                //lift.setTargetPosition(300);
-                //lift.setPower(1);
-                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO,robot.ARM_SERVO_DUMP_POS);
-                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO,robot.ARM_SERVO_GARD_OPEN_POS);
-                //armServo.setPosition(0.25);
-                //armGardServo.setPosition(0.15);
+                driveStraight(DRIVE_SPEED,23,0);
+                //Todo: add drop pixel function
+                turnToHeadingApollo(TURN_SPEED,270);
+                //Todo: add drop drive to back drop function
                 Log.d(TAG_TIME, "the final time is " + time.milliseconds());
 
         }

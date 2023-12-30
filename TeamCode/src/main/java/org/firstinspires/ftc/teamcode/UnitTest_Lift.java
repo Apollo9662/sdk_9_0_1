@@ -78,7 +78,7 @@ public class UnitTest_Lift extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        robot.init(hardwareMap);
+        robot.init(hardwareMap,false,false);
         touchSensor = hardwareMap.get(TouchSensor.class, "sensor_touch2");
         robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT, DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT, DcMotor.RunMode.RUN_WITHOUT_ENCODER);

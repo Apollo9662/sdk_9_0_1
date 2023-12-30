@@ -57,7 +57,7 @@ public class PID_Collection extends OpMode {
 
     @Override
     public void init() {
-        robot.init(hardwareMap);
+        robot.init(hardwareMap,false,false);
         PIDFCoefficients pidOrig = robot.GetPIDFCoefficients(RobotHardware_apollo.DriveMotors.COLLECTION, DcMotor.RunMode.RUN_USING_ENCODER);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         telemetry.addLine("init");

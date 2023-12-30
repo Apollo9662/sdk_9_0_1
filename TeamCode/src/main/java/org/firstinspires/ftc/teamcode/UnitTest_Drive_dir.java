@@ -101,7 +101,7 @@ public class UnitTest_Drive_dir extends OpMode {
      */
     @Override
     public void init() {
-        robot.init(hardwareMap);
+        robot.init(hardwareMap,true,false);
         robot.driveMotors = RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE;
     }
 

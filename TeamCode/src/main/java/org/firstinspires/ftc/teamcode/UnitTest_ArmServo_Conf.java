@@ -74,7 +74,7 @@ public class UnitTest_ArmServo_Conf extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        robot.init(hardwareMap);
+        robot.init(hardwareMap, false, false);
         waitForStart();
         while (opModeIsActive())
         {
@@ -123,7 +123,7 @@ public class UnitTest_ArmServo_Conf extends LinearOpMode {
             {
                 press = false;
             }
-            telemetry.addData("servo Position is  ","(%.2f)" + robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO));
+            telemetry.addData("servo Position is ", "(%.2f)", robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO));
             telemetry.update();
         }
     }

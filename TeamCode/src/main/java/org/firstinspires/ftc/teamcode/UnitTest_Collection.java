@@ -16,7 +16,7 @@ public class UnitTest_Collection extends LinearOpMode {
     @Override
     public void runOpMode()
     {
-        robot.init(hardwareMap);
+        robot.init(hardwareMap,false,false);
         robot.SetMode(RobotHardware_apollo.DriveMotors.COLLECTION, DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.SetMode(RobotHardware_apollo.DriveMotors.COLLECTION, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         waitForStart();
