@@ -109,9 +109,9 @@ public class RobotHardware_apollo {
     public double ARM_SERVO_COLLECT_POS = 0.2;
     public double ARM_SERVO_DUMP_POS = 0.8;
 
-    final public double ARM_SERVO_GARD_OPEN_POS = 0;
-    final public double ARM_SERVO_GARD_CLOSE_POS = 0.32;
-    final public double ARM_SERVO_GARD_OPEN_CLOSE_POS = 0.13;
+    public double ARM_SERVO_GARD_OPEN_POS = 0;
+    public double ARM_SERVO_GARD_CLOSE_POS = 0.32;
+    public double ARM_SERVO_GARD_OPEN_CLOSE_POS = 0.13;
     // Define a constructor that allows the OpMode to pass a reference to itself.
     //public RobotHardware_apollo(LinearOpMode opmode) {
         //myOpMode = opmode;
