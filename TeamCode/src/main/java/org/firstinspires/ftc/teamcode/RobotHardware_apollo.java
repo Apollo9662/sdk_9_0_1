@@ -88,6 +88,8 @@ public class RobotHardware_apollo {
     private TouchSensor touchSensor1 = null;
     private TouchSensor touchSensor2 = null;
     private Servo armServo = null;
+    private Servo dumpServo = null;
+    private Servo planeServo = null;
     private Servo armGardServo = null;
     private DcMotorEx backLeftDrive = null;
     private DcMotorEx frontLeftDrive = null;
@@ -102,16 +104,44 @@ public class RobotHardware_apollo {
             BACK_RIGHT_DRIVE,
             ARM_SERVO,
             ARM_GARD_SERVO,
+            PLANE_SERVO,
+            DUMP_SERVO,
             TOUCH_SENSOR1,
             TOUCH_SENSOR2,
             LIFT,
             COLLECTION};
+    public enum PLANE_STATE
+    {
+        OPEN,
+        CLOSE
+    };
+    PLANE_STATE plane_state;
+    public enum SERVO_POS {
+        DUMP_SERVO_CLOSE (0.0),
+        DUMP_SERVO_OPEN (0.6),
+        PLANE_SERVO_OPEN (0.9),
+        PLANE_SERVO_CLOSE (0.25),
+        ARM_SERVO_COLLECT_POS (0.2),
+        ARM_SERVO_DUMP_POS (0.6),
+        ARM_SERVO_GARD_OPEN_POS (0.0),
+        ARM_SERVO_GARD_CLOSE_POS (0.32),
+        ARM_SERVO_GARD_OPEN_CLOSE_POS (0.24);
+
+        public Double Pos;
+
+        private SERVO_POS(Double Pos) {
+            this.Pos = Pos;
+        }
+    }
+    //public SERVO_POS servo_pos;
+    /*
     public double ARM_SERVO_COLLECT_POS = 0.2;
     public double ARM_SERVO_DUMP_POS = 0.8;
-
     public double ARM_SERVO_GARD_OPEN_POS = 0;
     public double ARM_SERVO_GARD_CLOSE_POS = 0.32;
     public double ARM_SERVO_GARD_OPEN_CLOSE_POS = 0.13;
+
+     */
     // Define a constructor that allows the OpMode to pass a reference to itself.
     //public RobotHardware_apollo(LinearOpMode opmode) {
         //myOpMode = opmode;
@@ -171,11 +201,14 @@ public class RobotHardware_apollo {
         touchSensor1 = apolloHardwareMap.get(TouchSensor.class, "sensor_touch1");
         touchSensor2 = apolloHardwareMap.get(TouchSensor.class, "sensor_touch2");
         armServo = apolloHardwareMap.get(Servo.class, "collection_servo");//0
+        planeServo = apolloHardwareMap.get(Servo.class, "plane_servo");//
+        dumpServo = apolloHardwareMap.get(Servo.class, "dump_servo");
         armGardServo = apolloHardwareMap.get(Servo.class, "collection_gard_servo");
         huskyLens = apolloHardwareMap.get(HuskyLens.class, "huskylens");
         collection.setDirection(DcMotorSimple.Direction.REVERSE);
         lift.setDirection(DcMotorSimple.Direction.REVERSE);
         armServo.setDirection(Servo.Direction.FORWARD);
+        dumpServo.setDirection(Servo.Direction.FORWARD);
         armGardServo.setDirection(Servo.Direction.FORWARD);
         collection.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         collection.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -193,8 +226,8 @@ public class RobotHardware_apollo {
     {
         armServoState = ArmServoState.COLLECT;
         armServoGardState = ArmServoGardState.OPEN;
-        armServo.setPosition(ARM_SERVO_COLLECT_POS);
-        armGardServo.setPosition(ARM_SERVO_GARD_OPEN_POS);
+        armServo.setPosition(SERVO_POS.ARM_SERVO_COLLECT_POS.Pos);
+        armGardServo.setPosition(SERVO_POS.ARM_SERVO_GARD_OPEN_POS.Pos);
 
     }
     public void ImuInit()
@@ -417,6 +450,14 @@ public class RobotHardware_apollo {
             {
                 return (armGardServo.getPosition());
             }
+            case PLANE_SERVO:
+            {
+                return (planeServo.getPosition());
+            }
+            case DUMP_SERVO:
+            {
+                return  (dumpServo.getPosition());
+            }
             default:
                 return (1);
         }
@@ -441,6 +482,9 @@ public class RobotHardware_apollo {
                     frontRightDrive.setTargetPosition(Position);
                 }
                 break;
+                case COLLECTION:{
+                    collection.setTargetPosition(Position);
+                }
                 case LIFT: {
                     lift.setTargetPosition(Position);
                 }
@@ -492,11 +536,17 @@ public class RobotHardware_apollo {
     {
         switch (motor) {
 
+            case PLANE_SERVO:
+                planeServo.setPosition(Position);
+            break;
             case ARM_SERVO:
                 armServo.setPosition(Position);
             break;
             case ARM_GARD_SERVO:
                 armGardServo.setPosition(Position);
+            break;
+            case DUMP_SERVO:
+                dumpServo.setPosition(Position);
             break;
             default:
                 break;

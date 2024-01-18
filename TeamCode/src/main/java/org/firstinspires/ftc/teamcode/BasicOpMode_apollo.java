@@ -36,6 +36,7 @@ import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -56,8 +57,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 @Config
-@TeleOp(name="TeleOp apollo", group="TeleOp")
-//@Disabled
+@TeleOp(name="TeleOp apollo old", group="TeleOp")
+@Disabled
 public class BasicOpMode_apollo extends OpMode {
 
     private GamepadEx gamepadEx1;
@@ -96,12 +97,16 @@ public class BasicOpMode_apollo extends OpMode {
     collectThread collectThread = new collectThread();
     LiftThread liftTread = new LiftThread();
 
-    enum LiftState {STOP,
+    enum LiftState {
+        STOP,
         MANUAL_CONTROL,
         AUTO_CONTROL_WAIT_FOR_BUSY,
         AUTO_CONTROL_IN_POSITION,
         AUTO_CONTROL_ERROR,
-        RESETING_INCODER};
+        RESETING_INCODER
+    }
+
+    ;
     int pos;
     boolean stayInPosIsActive = false;
     //ConceptTensorFlowObjectDetection_Apollo detection;
@@ -113,7 +118,7 @@ public class BasicOpMode_apollo extends OpMode {
         gamepadEx1 = new GamepadEx(gamepad1);
         gamepadEx2 = new GamepadEx(gamepad2);
 
-        old_ARM_SERVO_DUMP_POS = robot.ARM_SERVO_DUMP_POS;
+        //old_ARM_SERVO_DUMP_POS = robot.ARM_SERVO_DUMP_POS;
         robot.init(hardwareMap, false, false);
         robot_Ftclib.init(hardwareMap);
         robot.ServoInit();
@@ -168,12 +173,12 @@ public class BasicOpMode_apollo extends OpMode {
 
     }
 
-    public void start()
-    {
+    public void start() {
         runtime.reset();
         collectThread.start();
         liftTread.start();
     }
+
     @Override
     public void loop() {
 
@@ -230,20 +235,15 @@ public class BasicOpMode_apollo extends OpMode {
         }
 
 
-
-
-
-
         // Show the elapsed game time and wheel power.
 
-        if (true == inPosition )
-        {
+        if (true == inPosition) {
             telemetry.addLine("lift in position!!!");
         }
         //detection.detect();
-        telemetry.addData("ARM_SERVO_DUMP_POS is " , robot.ARM_SERVO_DUMP_POS);
+        // telemetry.addData("ARM_SERVO_DUMP_POS is " , robot.ARM_SERVO_DUMP_POS);
         telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("MAXH is","(%.2f)" + liftMaxHight);
+        telemetry.addData("MAXH is", "(%.2f)" + liftMaxHight);
         //telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
         //telemetry.addData("side power", "(%.2f)",sidePower);
         telemetry.addData("lift Pos is ", "(%.2f)", robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.LIFT));
@@ -252,51 +252,41 @@ public class BasicOpMode_apollo extends OpMode {
         telemetry.update();
 
     }
-    public void stop()
-    {
-        while ((liftTread.isAlive()) || (collectThread.isAlive()))
-        {
+
+    public void stop() {
+        while ((liftTread.isAlive()) || (collectThread.isAlive())) {
             liftTread.interrupt();
             collectThread.interrupt();
         }
 
     }
-    private void drive()
-    {
+
+    private void drive() {
         double forwardSpeed;
         double turnSpeed;
         double strafeSpeed;
-        forwardSpeed   = gamepadEx1.getLeftY();  // Note: pushing stick forward gives negative value
-        strafeSpeed =  gamepadEx1.getLeftX();
-        turnSpeed     =  -gamepadEx1.getRightX();
+        forwardSpeed = gamepadEx1.getLeftY();  // Note: pushing stick forward gives negative value
+        strafeSpeed = gamepadEx1.getLeftX();
+        turnSpeed = -gamepadEx1.getRightX();
         double heading = robot_Ftclib.getRobotYawPitchRollAngles();
 
-        if (gamepadEx1.getButton(GamepadKeys.Button.X) == true)
-        {
+        if (gamepadEx1.getButton(GamepadKeys.Button.X) == true) {
             controlMod = true;
-        }
-        else if (gamepadEx1.getButton(GamepadKeys.Button.B))
-        {
+        } else if (gamepadEx1.getButton(GamepadKeys.Button.B)) {
             controlMod = false;
         }
 
-        if (controlMod == true)
-        {
-            robot_Ftclib.driveRobotCentric(strafeSpeed/2, forwardSpeed/2, turnSpeed/2);
-        }
-        else
-        {
+        if (controlMod == true) {
+            robot_Ftclib.driveRobotCentric(strafeSpeed / 2, forwardSpeed / 2, turnSpeed / 2);
+        } else {
             robot_Ftclib.driveRobotCentric(strafeSpeed, forwardSpeed, turnSpeed);
         }
 
 
-
     }
 
-    public class collectThread extends Thread
-    {
-        public collectThread()
-        {
+    public class collectThread extends Thread {
+        public collectThread() {
             this.setName("CollectThread");
             Log.d(TAG_COLLECTION_THREAD, "start collectThread");
         }
@@ -304,17 +294,14 @@ public class BasicOpMode_apollo extends OpMode {
 
         @Override
 
-        public void run()
-        {
-            try
-            {
+        public void run() {
+            try {
 
-                while (!isInterrupted())
-                {
+                while (!isInterrupted()) {
                     boolean collectionR = gamepad1.left_bumper; //R-reverse: pixel emission
                     boolean collectionF = gamepad1.right_bumper; // F-forward: pixel collection
                     boolean collectPixel = gamepad2.right_bumper;
-                    float dumpPixel =  gamepad2.right_trigger;
+                    float dumpPixel = gamepad2.right_trigger;
                     //float gatePositionOpenClose = gamepad2.left_trigger;
                     //boolean gatePositionOpen = gamepad2.left_bumper;
 
@@ -322,6 +309,8 @@ public class BasicOpMode_apollo extends OpMode {
 
                     gamepadEx1.readButtons();
                     gamepadEx2.readButtons();
+
+                }
 
                     /*
                     if (gatePositionOpenClose > 0.3)
@@ -338,8 +327,10 @@ public class BasicOpMode_apollo extends OpMode {
 
                      */
 
+                    /*
                     if (gamepadEx1.wasJustPressed(GamepadKeys.Button.DPAD_DOWN) == true)
                     {
+                        RobotHardware_apollo.SERVO_POS.ARM_SERVO_DUMP_POS.Pos -= 0.025;
                         robot.ARM_SERVO_DUMP_POS -= 0.025;
                         Log.d(TAG_COLLECTION, "ARM_SERVO_DUMP_POS is " + robot.ARM_SERVO_DUMP_POS);
                         robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO,robot.ARM_SERVO_DUMP_POS);
@@ -422,7 +413,8 @@ public class BasicOpMode_apollo extends OpMode {
                             armServoState = ArmServoState.CLOSE;
                             robot.SetPosition(RobotHardware_apollo.DriveMotors.COLLECTION_GARD_SERVO, 0.45);
                         }
-                        */
+                      */
+                    /*
                         }
                     }
                     else
@@ -546,6 +538,15 @@ public class BasicOpMode_apollo extends OpMode {
             }
         }
     }
+                     */
+            }  catch (Exception e)
+            {
+                Log.d(TAG_COLLECTION_THREAD, "catch exception: " + e.toString());
+            }
+
+        }
+    }
+
     // ezra test check github
     private class LiftThread extends Thread
     {
@@ -874,7 +875,7 @@ public class BasicOpMode_apollo extends OpMode {
         private void setGateServoToClose()
         {
             robot.armServoGardState = RobotHardware_apollo.ArmServoGardState.CLOSE;
-            robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO, robot.ARM_SERVO_GARD_CLOSE_POS);
+            //robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO, robot.ARM_SERVO_GARD_CLOSE_POS);
         }
     }
 

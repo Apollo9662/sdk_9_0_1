@@ -72,7 +72,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  */
 
 @TeleOp(name="Basic: Omni Linear OpMode fix", group="Linear OpMode")
-//@Disabled
+@Disabled
 public class BasicOmniOpMode_Linear_Fix extends LinearOpMode {
 
     // test

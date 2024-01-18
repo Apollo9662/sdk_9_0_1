@@ -7,6 +7,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.controller.PIDFController;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -18,7 +19,8 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.RobotHardware_apollo;
 
 @Config
-@TeleOp //(name="PID Collection dash borad", group="Unit Test")
+@TeleOp (name="PID Collection dash borad", group="Unit Test")
+@Disabled
 public class PID_Collection_dashBoard extends OpMode {
     RobotHardware_apollo robot = new RobotHardware_apollo();
     private PIDController controller;

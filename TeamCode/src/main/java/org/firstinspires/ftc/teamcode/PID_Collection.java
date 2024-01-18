@@ -5,6 +5,7 @@ import android.util.Log;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -21,6 +22,7 @@ import java.util.Currency;
 
 @Config
 @TeleOp(name="PID Collection", group="Unit Test")
+@Disabled
 public class PID_Collection extends OpMode {
     RobotHardware_apollo robot = new RobotHardware_apollo();
     double integralSum = 0;

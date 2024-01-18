@@ -73,7 +73,7 @@ import java.util.List;
  */
 @Config
 @TeleOp(name="TeleOp Linear apollo", group="TeleOp")
-//@Disabled
+@Disabled
 public class BasicOpMode_Linear_apollo extends LinearOpMode {
 
     private GamepadEx driveOp;
@@ -393,6 +393,7 @@ public class BasicOpMode_Linear_apollo extends LinearOpMode {
         }
         public void CollectPixel()
         {
+            /*
             //74
             if (robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO) != robot.ARM_SERVO_COLLECT_POS)
             {
@@ -408,9 +409,12 @@ public class BasicOpMode_Linear_apollo extends LinearOpMode {
                 //armServoGardState = ArmServoGardState.OPEN;
                 robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO, robot.ARM_SERVO_GARD_OPEN_POS);
             }
+
+             */
         }
         public void DumpPixel()
         {
+            /*
             robot.armServoState = RobotHardware_apollo.ArmServoState.DUMP;
             //armServoState = ArmServoState.DUMP;
             robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO, robot.ARM_SERVO_DUMP_POS);
@@ -433,6 +437,8 @@ public class BasicOpMode_Linear_apollo extends LinearOpMode {
                 //armServoGardState = ArmServoGardState.CLOSE;
                 robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO, robot.ARM_SERVO_GARD_CLOSE_POS);
             }
+
+             */
         }
     }
     // ezra test check github

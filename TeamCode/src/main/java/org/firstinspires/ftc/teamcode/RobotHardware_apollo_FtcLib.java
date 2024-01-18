@@ -120,11 +120,6 @@ public class RobotHardware_apollo_FtcLib {
                 RevHubOrientationOnRobot.UsbFacingDirection.UP
         )));
 
-        if (imuInitialize)
-        {
-
-        }
-
 
         imu.resetYaw();
 
@@ -141,6 +136,10 @@ public class RobotHardware_apollo_FtcLib {
         frontRightDrive.setInverted(true);
         mecanumDriveBase = new MecanumDrive(frontLeftDrive, frontRightDrive, backLeftDrive, backRightDrive);
 
+    }
+    public void ResetYaw()
+    {
+        imu.resetYaw();
     }
     public void SetAllMotorsZeroPowerBehavior(Motor.ZeroPowerBehavior myZeroPowerBehavior)
     {

@@ -1,8 +1,11 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.util.Log;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 @Config
 @TeleOp(name="UnitTest Drive Dir", group="Unit Test")
@@ -98,24 +101,71 @@ public class UnitTest_Drive_dir extends OpMode {
         }
 
 
+
      */
+    final String TAG_DRIVE = "Drive";
+    public static double Power = 0.2;
     @Override
     public void init() {
         robot.init(hardwareMap,true,false);
-        robot.driveMotors = RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE;
+        robot.SetAllDriveMotorsMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.SetAllDriveMotorsMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        telemetry.addLine("ok");
+        telemetry.update();
+        //robot.driveMotors = RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE;
     }
 
     @Override
     public void loop() {
-        robot.SetPower(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE, 0.2);
-        robot.SetPower(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE, 0.2);
-        robot.SetPower(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE, 0.2);
-        robot.SetPower(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE, 0.2);
+        if (gamepad1.y)
+        {
+            robot.SetPower(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE, -0.8);
+            robot.SetPower(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE, -0.8);
+            robot.SetPower(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE, -0.8);
+            robot.SetPower(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE, -0.8);
+        }
+        if (gamepad1.a)
+        {
+            robot.SetPower(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE, 0.8);
+            robot.SetPower(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE, 0.8);
+            robot.SetPower(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE, 0.8);
+            robot.SetPower(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE, 0.8);
+        }
+        else if (gamepad1.b)
+        {
+            Log.d(TAG_DRIVE, "press a");
+            robot.SetPower(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE, 0.8);
+            robot.SetPower(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE, -0.8);
+            robot.SetPower(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE, -0.8);
+            robot.SetPower(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE, 0.8);
+        }
+        else if (gamepad1.x)
+        {
+            Log.d(TAG_DRIVE, "press a");
+            robot.SetPower(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE, -0.8);
+            robot.SetPower(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE, 0.8);
+            robot.SetPower(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE, 0.8);
+            robot.SetPower(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE, -0.8);
+        }
+        else
+        {
+            robot.SetPower(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE, 0);
+            robot.SetPower(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE, 0);
+            robot.SetPower(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE, 0);
+            robot.SetPower(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE, 0);
+        }
+        Log.d(TAG_DRIVE,"BACK_LEFT_DRIVE POS " + robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE));
+        Log.d(TAG_DRIVE,"BACK_RIGHT_DRIVE POS " + robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE));
+        Log.d(TAG_DRIVE,"FRONT_RIGHT_DRIVE POS " + robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE));
+        Log.d(TAG_DRIVE,"FRONT_LEFT_DRIVE POS " + robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE));
+        /*
         telemetry.addData("BACK_LEFT_DRIVE POS",robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE));
         telemetry.addData("BACK_RIGHT_DRIVE POS",robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE));
         telemetry.addData("FRONT_RIGHT_DRIVE POS",robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE));
         telemetry.addData("FRONT_LEFT_DRIVE POS",robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE));
         telemetry.update();
+
+         */
     }
     }
 

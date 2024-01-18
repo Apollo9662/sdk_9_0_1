@@ -46,7 +46,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 @TeleOp(name="Basic: Omni Linear OpMode test", group="Linear OpMode")
-//@Disabled
+@Disabled
 public class BasicOmniOpMode_Linear_Test extends LinearOpMode {
 
     IMU imu;

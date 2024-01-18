@@ -94,7 +94,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  */
 
 @Autonomous(name="Apollo Autonomous", group="Apollo")
-//@Disabled
+@Disabled
 public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
 
     /* Declare OpMode members. */
@@ -645,13 +645,13 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
                 time.reset();
                 driveStraight(DRIVE_SPEED, 23.5, 0.0);
                 turnToHeading( TURN_SPEED, 180.0);
-                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO,robot.ARM_SERVO_DUMP_POS);
-                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO,robot.ARM_SERVO_GARD_OPEN_CLOSE_POS);
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO, RobotHardware_apollo.SERVO_POS.ARM_SERVO_DUMP_POS.Pos);
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO, RobotHardware_apollo.SERVO_POS.ARM_SERVO_GARD_OPEN_CLOSE_POS.Pos);
                 //armServo.setPosition(0.25);
                 //armGardServo.setPosition(0.3);
                 sleep(600);
-                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO,robot.ARM_SERVO_GARD_CLOSE_POS);
-                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO,robot.ARM_SERVO_COLLECT_POS);
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO, RobotHardware_apollo.SERVO_POS.ARM_SERVO_GARD_CLOSE_POS.Pos);
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO, RobotHardware_apollo.SERVO_POS.ARM_SERVO_COLLECT_POS.Pos);
                 //armGardServo.setPosition(0.45);
                 //armServo.setPosition(0.71);// Drive Forward 24"
                 //sleep(3000);
@@ -663,8 +663,8 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
                 robot.SetPower(RobotHardware_apollo.DriveMotors.LIFT, 1);
                 //lift.setTargetPosition(300);
                 //lift.setPower(1);
-                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO,robot.ARM_SERVO_DUMP_POS);
-                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO,robot.ARM_SERVO_GARD_OPEN_POS);
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO, RobotHardware_apollo.SERVO_POS.ARM_SERVO_DUMP_POS.Pos);
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO, RobotHardware_apollo.SERVO_POS.ARM_SERVO_GARD_OPEN_POS.Pos);
                 //armServo.setPosition(0.25);
                 //armGardServo.setPosition(0.15);
                 Log.d(TAG_TIME, "the final time is " + time.milliseconds());
@@ -673,13 +673,13 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
                 time.reset();
                 driveStraight(DRIVE_SPEED, 23.5, 0.0);
                 turnToHeading(TURN_SPEED, -90);
-                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO,robot.ARM_SERVO_DUMP_POS);
-                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO,robot.ARM_SERVO_GARD_OPEN_CLOSE_POS);
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO, RobotHardware_apollo.SERVO_POS.ARM_SERVO_DUMP_POS.Pos);
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO, RobotHardware_apollo.SERVO_POS.ARM_SERVO_GARD_OPEN_CLOSE_POS.Pos);
                 //armServo.setPosition(0.25);
                 //armGardServo.setPosition(0.3);
                 sleep(600);
-                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO,robot.ARM_SERVO_GARD_CLOSE_POS);
-                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO,robot.ARM_SERVO_COLLECT_POS);
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO, RobotHardware_apollo.SERVO_POS.ARM_SERVO_GARD_CLOSE_POS.Pos);
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO, RobotHardware_apollo.SERVO_POS.ARM_SERVO_COLLECT_POS.Pos);
                 //armGardServo.setPosition(0.45);
                 //armServo.setPosition(0.71);// Drive Forward 24"
                 //sleep(3000);
@@ -692,8 +692,8 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
                 robot.SetPower(RobotHardware_apollo.DriveMotors.LIFT, 1);
                 //lift.setTargetPosition(300);
                 //lift.setPower(1);
-                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO,robot.ARM_SERVO_DUMP_POS);
-                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO,robot.ARM_SERVO_GARD_OPEN_POS);
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO, RobotHardware_apollo.SERVO_POS.ARM_SERVO_DUMP_POS.Pos);
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO, RobotHardware_apollo.SERVO_POS.ARM_SERVO_GARD_OPEN_POS.Pos);
                 //armServo.setPosition(0.25);
                 //armGardServo.setPosition(0.15);
                 Log.d(TAG_TIME, "the final time is " + time.milliseconds());
@@ -702,13 +702,13 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
                 time.reset();
                 driveStraight(DRIVE_SPEED, 23.5, 0.0);
                 turnToHeading(TURN_SPEED, 90);
-                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO,robot.ARM_SERVO_DUMP_POS);
-                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO,robot.ARM_SERVO_GARD_OPEN_CLOSE_POS);
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO, RobotHardware_apollo.SERVO_POS.ARM_SERVO_DUMP_POS.Pos);
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO, RobotHardware_apollo.SERVO_POS.ARM_SERVO_GARD_OPEN_CLOSE_POS.Pos);
                 //armServo.setPosition(0.25);
                 //armGardServo.setPosition(0.3);
                 sleep(600);
-                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO,robot.ARM_SERVO_GARD_CLOSE_POS);
-                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO,robot.ARM_SERVO_COLLECT_POS);
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO, RobotHardware_apollo.SERVO_POS.ARM_SERVO_GARD_CLOSE_POS.Pos);
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO, RobotHardware_apollo.SERVO_POS.ARM_SERVO_COLLECT_POS.Pos);
                 //armGardServo.setPosition(0.45);
                 //armServo.setPosition(0.71);// Drive Forward 24"
                 turnToHeading(TURN_SPEED, -90);
@@ -722,8 +722,8 @@ public class RobotAutoDriveByGyroOren_Linear extends LinearOpMode {
                 robot.SetPower(RobotHardware_apollo.DriveMotors.LIFT, 1);
                 //lift.setTargetPosition(300);
                 //lift.setPower(1);
-                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO,robot.ARM_SERVO_DUMP_POS);
-                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO,robot.ARM_SERVO_GARD_OPEN_POS);
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO, RobotHardware_apollo.SERVO_POS.ARM_SERVO_DUMP_POS.Pos);
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO, RobotHardware_apollo.SERVO_POS.ARM_SERVO_GARD_OPEN_POS.Pos);
                 //armServo.setPosition(0.25);
                 //armGardServo.setPosition(0.15);
                 Log.d(TAG_TIME, "the final time is " + time.milliseconds());
