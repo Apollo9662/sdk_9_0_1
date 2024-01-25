@@ -117,15 +117,15 @@ public class RobotHardware_apollo {
     };
     PLANE_STATE plane_state;
     public enum SERVO_POS {
-        DUMP_SERVO_CLOSE (0.0),
-        DUMP_SERVO_OPEN (0.6),
+        DUMP_SERVO_CLOSE (0.4),
+        DUMP_SERVO_OPEN (1.0),
         PLANE_SERVO_OPEN (0.9),
         PLANE_SERVO_CLOSE (0.25),
         ARM_SERVO_COLLECT_POS (0.2),
         ARM_SERVO_DUMP_POS (0.6),
         ARM_SERVO_GARD_OPEN_POS (0.0),
         ARM_SERVO_GARD_CLOSE_POS (0.32),
-        ARM_SERVO_GARD_OPEN_CLOSE_POS (0.24);
+        ARM_SERVO_GARD_OPEN_CLOSE_POS (0.2);
 
         public Double Pos;
 
@@ -456,7 +456,7 @@ public class RobotHardware_apollo {
             }
             case DUMP_SERVO:
             {
-                return  (dumpServo.getPosition());
+                return (dumpServo.getPosition());
             }
             default:
                 return (1);
