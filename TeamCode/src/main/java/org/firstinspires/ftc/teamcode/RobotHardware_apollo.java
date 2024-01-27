@@ -124,8 +124,8 @@ public class RobotHardware_apollo {
         DUMP_SERVO_OPEN (1.0),
         PLANE_SERVO_OPEN (0.9),
         PLANE_SERVO_CLOSE (0.25),
-        ARM_SERVO_COLLECT_POS (0.2),
-        ARM_SERVO_DUMP_POS (0.6),
+        ARM_SERVO_COLLECT_POS (1.0),
+        ARM_SERVO_DUMP_POS (0.55),
         ARM_SERVO_GARD_OPEN_POS (0.0),
         ARM_SERVO_GARD_CLOSE_POS (0.32),
         ARM_SERVO_GARD_OPEN_CLOSE_POS (0.2);
