@@ -705,6 +705,7 @@ public class BasicOpMode_apollo_better extends OpMode {
                             robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT , DcMotor.RunMode.RUN_TO_POSITION);
                             liftPower = -POWER_LIFT;
                             robot.SetPower(RobotHardware_apollo.DriveMotors.LIFT , liftPower);
+                            robot.SetPower(RobotHardware_apollo.DriveMotors.LIFT_SECOND , liftPower);
                             //liftPower = 0;
                             if (inPosition == false)
                             {
@@ -807,6 +808,7 @@ public class BasicOpMode_apollo_better extends OpMode {
 
                 }
                 robot.SetPower(RobotHardware_apollo.DriveMotors.LIFT , liftPower);
+                robot.SetPower(RobotHardware_apollo.DriveMotors.LIFT_SECOND , liftPower);
 
 
             }
@@ -858,6 +860,7 @@ public class BasicOpMode_apollo_better extends OpMode {
             robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT , DcMotor.RunMode.RUN_TO_POSITION);
             liftPower = POWER_LIFT;
             robot.SetPower(RobotHardware_apollo.DriveMotors.LIFT ,liftPower);
+            robot.SetPower(RobotHardware_apollo.DriveMotors.LIFT_SECOND ,liftPower);
             inPosition = false;
             liftTime.reset();
             liftState = LiftState.AUTO_CONTROL_WAIT_FOR_BUSY;
@@ -880,6 +883,7 @@ public class BasicOpMode_apollo_better extends OpMode {
                 robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT , DcMotor.RunMode.RUN_TO_POSITION);
                 liftPower = POWER_LIFT;
                 robot.SetPower(RobotHardware_apollo.DriveMotors.LIFT, liftPower);
+                robot.SetPower(RobotHardware_apollo.DriveMotors.LIFT_SECOND, liftPower);
                 liftTime.reset();
                 liftState = LiftState.AUTO_CONTROL_WAIT_FOR_BUSY;
                 timerTimeoutInSeconds = LIFT_TIMEOUT_STAY_SEC;
@@ -887,6 +891,7 @@ public class BasicOpMode_apollo_better extends OpMode {
             else
             {
                 robot.SetPower(RobotHardware_apollo.DriveMotors.LIFT, 0);
+                robot.SetPower(RobotHardware_apollo.DriveMotors.LIFT_SECOND, 0);
             }
 
 

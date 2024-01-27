@@ -96,7 +96,9 @@ public class RobotHardware_apollo {
     private DcMotorEx frontRightDrive = null;
     private DcMotorEx backRightDrive = null;
     private DcMotorEx collection = null;
-    public DcMotorEx lift = null; // private
+    public DcMotorEx lift = null;
+    public DcMotorEx liftSecond = null;  // private     public DcMotorEx lift = null; // private
+
     public static DriveMotors driveMotors;
     public enum DriveMotors {BACK_LEFT_DRIVE,
             FRONT_LEFT_DRIVE,
@@ -109,6 +111,7 @@ public class RobotHardware_apollo {
             TOUCH_SENSOR1,
             TOUCH_SENSOR2,
             LIFT,
+            LIFT_SECOND,
             COLLECTION};
     public enum PLANE_STATE
     {
@@ -198,6 +201,7 @@ public class RobotHardware_apollo {
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
         collection = apolloHardwareMap.get(DcMotorEx.class, "collection");//0
         lift = apolloHardwareMap.get(DcMotorEx.class, "lift");//2
+        liftSecond = apolloHardwareMap.get(DcMotorEx.class, "lift_second");
         touchSensor1 = apolloHardwareMap.get(TouchSensor.class, "sensor_touch1");
         touchSensor2 = apolloHardwareMap.get(TouchSensor.class, "sensor_touch2");
         armServo = apolloHardwareMap.get(Servo.class, "collection_servo");//0
@@ -207,6 +211,7 @@ public class RobotHardware_apollo {
         huskyLens = apolloHardwareMap.get(HuskyLens.class, "huskylens");
         collection.setDirection(DcMotorSimple.Direction.REVERSE);
         lift.setDirection(DcMotorSimple.Direction.REVERSE);
+        liftSecond.setDirection(DcMotorSimple.Direction.REVERSE);
         armServo.setDirection(Servo.Direction.FORWARD);
         dumpServo.setDirection(Servo.Direction.FORWARD);
         armGardServo.setDirection(Servo.Direction.FORWARD);
@@ -214,6 +219,8 @@ public class RobotHardware_apollo {
         collection.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        liftSecond.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftSecond.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
     public void SetAllMotorsZeroPowerBehavior(DcMotor.ZeroPowerBehavior myZeroPowerBehavior)
     {
@@ -272,6 +279,11 @@ public class RobotHardware_apollo {
                 lift.setPower(Power);
             }
             break;
+            case LIFT_SECOND:
+            {
+                liftSecond.setPower(Power);
+            }
+            break;
             case COLLECTION:
             {
                 collection.setPower(Power);
@@ -312,6 +324,11 @@ public class RobotHardware_apollo {
                 lift.setVelocity(Power);
             }
             break;
+            case LIFT_SECOND:
+            {
+                liftSecond.setVelocity(Power);
+            }
+            break;
             case COLLECTION:
             {
                 collection.setVelocity(Power);
@@ -346,6 +363,10 @@ public class RobotHardware_apollo {
             {
                 return lift.getPower();
             }
+            case LIFT_SECOND:
+            {
+                return liftSecond.getPower();
+            }
             case COLLECTION:
             {
                 return collection.getPower();
@@ -377,6 +398,10 @@ public class RobotHardware_apollo {
             case LIFT:
             {
                 return lift.getPIDFCoefficients(myMode);
+            }
+            case LIFT_SECOND:
+            {
+                return liftSecond.getPIDFCoefficients(myMode);
             }
             case COLLECTION:
             {
@@ -410,6 +435,10 @@ public class RobotHardware_apollo {
             {
                 return lift.getVelocity();
             }
+            case LIFT_SECOND:
+            {
+                return liftSecond.getVelocity();
+            }
             case COLLECTION:
             {
                 return collection.getVelocity();
@@ -441,6 +470,10 @@ public class RobotHardware_apollo {
             case LIFT:
             {
                 return (lift.getCurrentPosition());
+            }
+            case LIFT_SECOND:
+            {
+                return (liftSecond.getCurrentPosition());
             }
             case ARM_SERVO:
             {
@@ -488,6 +521,10 @@ public class RobotHardware_apollo {
                 case LIFT: {
                     lift.setTargetPosition(Position);
                 }
+                case LIFT_SECOND: {
+                    liftSecond.setTargetPosition(Position);
+                }
+
                 break;
                 default:
                     break;
@@ -519,6 +556,9 @@ public class RobotHardware_apollo {
             }
             case LIFT: {
                 lift.setMode(myMode);
+            }
+            case LIFT_SECOND: {
+                liftSecond.setMode(myMode);
             }
             break;
             default:
@@ -583,6 +623,8 @@ public class RobotHardware_apollo {
             }
             case LIFT:
                 return lift.isBusy();
+            case LIFT_SECOND:
+                return liftSecond.isBusy();
             default:
                 return (false);
         }
@@ -608,6 +650,9 @@ public class RobotHardware_apollo {
             }
             case LIFT:
                 lift.setZeroPowerBehavior(myZeroPowerBehavior);
+
+            case LIFT_SECOND:
+                liftSecond.setZeroPowerBehavior(myZeroPowerBehavior);
             break;
             default:
                 break;
