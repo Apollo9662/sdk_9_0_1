@@ -87,17 +87,34 @@ public class UnitTest_DumpServo_conf extends OpMode {
     public void loop() {
         gamepadEx1.readButtons();
         double pos = robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.DUMP_SERVO);
-        if(gamepadEx1.wasJustPressed(GamepadKeys.Button.A))
+        if (gamepadEx1.wasJustPressed(GamepadKeys.Button.BACK))
         {
-            telemetry.addLine("press a");
-            robot.SetPosition(RobotHardware_apollo.DriveMotors.DUMP_SERVO, pos + 0.01);
+            if(gamepadEx1.wasJustPressed(GamepadKeys.Button.A))
+            {
+                telemetry.addLine("press a");
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.DUMP_SERVO, pos + 0.001);
+            }
+            else if(gamepadEx1.wasJustPressed(GamepadKeys.Button.Y))
+            {
+                telemetry.addLine("press y");
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.DUMP_SERVO, pos - 0.001);
+            }
         }
-        else if(gamepadEx1.wasJustPressed(GamepadKeys.Button.Y))
+        else
         {
-            telemetry.addLine("press y");
-            robot.SetPosition(RobotHardware_apollo.DriveMotors.DUMP_SERVO, pos - 0.01);
+            if(gamepadEx1.wasJustPressed(GamepadKeys.Button.A))
+            {
+                telemetry.addLine("press a");
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.DUMP_SERVO, pos + 0.01);
+            }
+            else if(gamepadEx1.wasJustPressed(GamepadKeys.Button.Y))
+            {
+                telemetry.addLine("press y");
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.DUMP_SERVO, pos - 0.01);
+            }
         }
-        telemetry.addData("servo Position is  ","(%.2f)" + robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.DUMP_SERVO));
+
+        telemetry.addData("servo Position is  ","(%.2f)", robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.DUMP_SERVO));
         telemetry.update();
     }
 }

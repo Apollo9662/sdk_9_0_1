@@ -80,11 +80,11 @@ public class UnitTest_Lift extends LinearOpMode {
     @Override
     public void runOpMode() {
         robot.init(hardwareMap,false,false);
-        touchSensor = hardwareMap.get(TouchSensor.class, "sensor_touch2");
+        touchSensor = hardwareMap.get(TouchSensor.class, "sensor_touch");
         robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT, DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT_SECOND, DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT_SECOND, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT_SECOND, DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT_SECOND, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         double POWER_LIFT = 1;
         double liftPower;
         waitForStart();
@@ -116,11 +116,11 @@ public class UnitTest_Lift extends LinearOpMode {
                     telemetry.addData("Touch Sensor", "Is Not Pressed");
                 }
                 robot.SetPower(RobotHardware_apollo.DriveMotors.LIFT, liftPower);
-                robot.SetPower(RobotHardware_apollo.DriveMotors.LIFT_SECOND, liftPower);
+                //robot.SetPower(RobotHardware_apollo.DriveMotors.LIFT_SECOND, liftPower);
                 telemetry.addData("Power is ", "(%.2f)" + robot.GetPower(RobotHardware_apollo.DriveMotors.LIFT));
                 telemetry.addData("current position ", "(%.2f)" + robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.LIFT));
-                telemetry.addData("Power Secnd is ", "(%.2f)" + robot.GetPower(RobotHardware_apollo.DriveMotors.LIFT_SECOND));
-                telemetry.addData("current position ", "(%.2f)" + robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.LIFT_SECOND));
+                //telemetry.addData("Power Secnd is ", "(%.2f)" + robot.GetPower(RobotHardware_apollo.DriveMotors.LIFT_SECOND));
+                //telemetry.addData("current position ", "(%.2f)" + robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.LIFT_SECOND));
                 telemetry.update();
             }
         }

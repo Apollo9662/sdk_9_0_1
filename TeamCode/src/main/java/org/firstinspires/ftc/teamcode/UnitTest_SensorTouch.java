@@ -56,7 +56,7 @@ public class UnitTest_SensorTouch extends LinearOpMode {
     public void runOpMode() {
 
         // get a reference to our touchSensor object.
-        touchSensor = hardwareMap.get(TouchSensor.class, "sensor_touch2");
+        touchSensor = hardwareMap.get(TouchSensor.class, "sensor_touch");
 
         // wait for the start button to be pressed.
         waitForStart();

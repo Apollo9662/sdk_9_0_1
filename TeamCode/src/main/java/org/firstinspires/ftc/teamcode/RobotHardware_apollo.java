@@ -97,7 +97,7 @@ public class RobotHardware_apollo {
     private DcMotorEx backRightDrive = null;
     private DcMotorEx collection = null;
     public DcMotorEx lift = null;
-    public DcMotorEx liftSecond = null;  // private     public DcMotorEx lift = null; // private
+    private DcMotorEx liftSecond = null;  // private     public DcMotorEx lift = null; // private
 
     public static DriveMotors driveMotors;
     public enum DriveMotors {BACK_LEFT_DRIVE,
@@ -124,8 +124,8 @@ public class RobotHardware_apollo {
         DUMP_SERVO_OPEN (1.0),
         PLANE_SERVO_OPEN (0.9),
         PLANE_SERVO_CLOSE (0.25),
-        ARM_SERVO_COLLECT_POS (1.0),
-        ARM_SERVO_DUMP_POS (0.55),
+        ARM_SERVO_COLLECT_POS (0.95),
+        ARM_SERVO_DUMP_POS (0.44),
         ARM_SERVO_GARD_OPEN_POS (0.0),
         ARM_SERVO_GARD_CLOSE_POS (0.32),
         ARM_SERVO_GARD_OPEN_CLOSE_POS (0.2);
@@ -161,11 +161,11 @@ public class RobotHardware_apollo {
         if (initDrive)
         {
             backLeftDrive = apolloHardwareMap.get(DcMotorEx.class, "back_left_drive"); //0
-            frontLeftDrive = apolloHardwareMap.get(DcMotorEx.class, "front_left_drive"); //1
+            frontLeftDrive = apolloHardwareMap.get(DcMotorEx.class, "front_left_drive"); //3
             backRightDrive = apolloHardwareMap.get(DcMotorEx.class, "back_right_drive"); //2
             frontRightDrive = apolloHardwareMap.get(DcMotorEx.class, "front_right_drive");//3
             backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-            frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+            frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
             backRightDrive.setDirection(DcMotor.Direction.FORWARD);
             frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
             backLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -201,13 +201,13 @@ public class RobotHardware_apollo {
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
         collection = apolloHardwareMap.get(DcMotorEx.class, "collection");//0
         lift = apolloHardwareMap.get(DcMotorEx.class, "lift");//2
-        liftSecond = apolloHardwareMap.get(DcMotorEx.class, "lift_second");
-        touchSensor1 = apolloHardwareMap.get(TouchSensor.class, "sensor_touch1");
-        touchSensor2 = apolloHardwareMap.get(TouchSensor.class, "sensor_touch2");
-        armServo = apolloHardwareMap.get(Servo.class, "collection_servo");//0
+        liftSecond = apolloHardwareMap.get(DcMotorEx.class, "second_lift");
+        //touchSensor1 = apolloHardwareMap.get(TouchSensor.class, "sensor_touch1");
+        touchSensor2 = apolloHardwareMap.get(TouchSensor.class, "sensor_touch");
+        armServo = apolloHardwareMap.get(Servo.class, "arm_servo");//0
         planeServo = apolloHardwareMap.get(Servo.class, "plane_servo");//
-        dumpServo = apolloHardwareMap.get(Servo.class, "dump_servo");
-        armGardServo = apolloHardwareMap.get(Servo.class, "collection_gard_servo");
+        dumpServo = apolloHardwareMap.get(Servo.class, "dump_servo");//3
+        armGardServo = apolloHardwareMap.get(Servo.class, "arm_gard_servo");//2
         huskyLens = apolloHardwareMap.get(HuskyLens.class, "huskylens");
         collection.setDirection(DcMotorSimple.Direction.REVERSE);
         lift.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -277,6 +277,7 @@ public class RobotHardware_apollo {
             case LIFT:
             {
                 lift.setPower(Power);
+                liftSecond.setPower(Power);
             }
             break;
             case LIFT_SECOND:
@@ -322,6 +323,7 @@ public class RobotHardware_apollo {
             case LIFT:
             {
                 lift.setVelocity(Power);
+                liftSecond.setVelocity(Power);
             }
             break;
             case LIFT_SECOND:
@@ -500,26 +502,33 @@ public class RobotHardware_apollo {
             switch (motor) {
 
                 case BACK_LEFT_DRIVE: {
+                    backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     backLeftDrive.setTargetPosition(Position);
                 }
                 break;
                 case BACK_RIGHT_DRIVE: {
+                    backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     backRightDrive.setTargetPosition(Position);
                 }
                 break;
                 case FRONT_LEFT_DRIVE: {
+                    frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     frontLeftDrive.setTargetPosition(Position);
                 }
                 break;
                 case FRONT_RIGHT_DRIVE: {
+                    frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     frontRightDrive.setTargetPosition(Position);
                 }
                 break;
                 case COLLECTION:{
+                    collection.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     collection.setTargetPosition(Position);
                 }
                 case LIFT: {
+                    //lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     lift.setTargetPosition(Position);
+                    //liftSecond.setTargetPosition(Position);
                 }
                 case LIFT_SECOND: {
                     liftSecond.setTargetPosition(Position);
@@ -556,6 +565,7 @@ public class RobotHardware_apollo {
             }
             case LIFT: {
                 lift.setMode(myMode);
+                //liftSecond.setMode(myMode);
             }
             case LIFT_SECOND: {
                 liftSecond.setMode(myMode);
@@ -650,7 +660,7 @@ public class RobotHardware_apollo {
             }
             case LIFT:
                 lift.setZeroPowerBehavior(myZeroPowerBehavior);
-
+                //liftSecond.setZeroPowerBehavior(myZeroPowerBehavior);
             case LIFT_SECOND:
                 liftSecond.setZeroPowerBehavior(myZeroPowerBehavior);
             break;
