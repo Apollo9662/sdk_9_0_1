@@ -71,53 +71,60 @@ public class HuskyLens_Apollo
                 // id1 is the red one, id2 is the blue one.
                 Log.d(TAG_HUSKYLENS, "the id of block" + i + "is" + blocks[i].id);
                 Log.d(TAG_HUSKYLENS, "The position of block " + i + " is [x,y] (" + blocks[i].x + "," + blocks[i].y + ")");
-                if (propColor == PropColor.RED)
+                if (propId == blocks[i].id)
                 {
-                    if ((blocks[i].x > 88) && (blocks[i].x < 160) &&(blocks[i].y > 40) && (blocks[i].y< 60))
+                    if (propColor == PropColor.RED)
                     {
-                        propPos = PropPos.UP;
-                        Log.d(TAG_HUSKYLENS, "The Prop is on line Top");
+                        if ((blocks[i].x > 88) && (blocks[i].x < 160) &&(blocks[i].y > 40) && (blocks[i].y< 60))
+                        {
+                            propPos = PropPos.UP;
+                            Log.d(TAG_HUSKYLENS, "The Prop is on line Top");
+                        }
+                        else if ((blocks[i].x > 217) && (blocks[i].x < 244) && (blocks[i].y < 192) && (blocks[i].y > 105))
+                        {
+                            propPos = PropPos.RIGHT;
+                            Log.d(TAG_HUSKYLENS, "The Prop is on line Right");
+                        }
+                        else if ((blocks[i].x > 217) && (blocks[i].x < 244) && (blocks[i].y < 192) && (blocks[i].y > 105))
+                        {
+                            propPos = PropPos.LEFT;
+                            Log.d(TAG_HUSKYLENS, "The Prop is on line Left");
+                        }
+                        else
+                        {
+                            propPos = null;
+                            Log.d(TAG_HUSKYLENS, "No Prop was recognized");
+                        }
                     }
-                    else if ((blocks[i].x > 217) && (blocks[i].x < 244) && (blocks[i].y < 192) && (blocks[i].y > 105))
+                    else if (propColor == PropColor.BLUE)
                     {
-                        propPos = PropPos.RIGHT;
-                        Log.d(TAG_HUSKYLENS, "The Prop is on line Right");
-                    }
-                    else if ((blocks[i].x > 217) && (blocks[i].x < 244) && (blocks[i].y < 192) && (blocks[i].y > 105))
-                    {
-                        propPos = PropPos.LEFT;
-                        Log.d(TAG_HUSKYLENS, "The Prop is on line Left");
+                        if ((blocks[i].x > 88) && (blocks[i].x < 160) &&(blocks[i].y > 40) && (blocks[i].y< 60))
+                        {
+                            propPos = PropPos.UP;
+                            Log.d(TAG_HUSKYLENS, "The Prop is on line Top");
+                        }
+                        else if ((blocks[i].x > 217) && (blocks[i].x < 244) && (blocks[i].y < 192) && (blocks[i].y > 105))
+                        {
+                            propPos = PropPos.RIGHT;
+                            Log.d(TAG_HUSKYLENS, "The Prop is on line Right");
+                        }
+                        else if ((blocks[i].x > 217) && (blocks[i].x < 244) && (blocks[i].y < 192) && (blocks[i].y > 105))
+                        {
+                            propPos = PropPos.LEFT;
+                            Log.d(TAG_HUSKYLENS, "The Prop is on line Left");
+                        }
+                        else
+                        {
+                            propPos = null;
+                            Log.d(TAG_HUSKYLENS, "No Prop was recognized");
+                        }
                     }
                     else
                     {
                         propPos = null;
-                        Log.d(TAG_HUSKYLENS, "No Prop was recognized");
+                        Log.d(TAG_HUSKYLENS, "You Forgot To Init the Prop Color");
                     }
                 }
-                else
-                {
-                    if ((blocks[i].x > 88) && (blocks[i].x < 160) &&(blocks[i].y > 40) && (blocks[i].y< 60))
-                    {
-                        propPos = PropPos.UP;
-                        Log.d(TAG_HUSKYLENS, "The Prop is on line Top");
-                    }
-                    else if ((blocks[i].x > 217) && (blocks[i].x < 244) && (blocks[i].y < 192) && (blocks[i].y > 105))
-                    {
-                        propPos = PropPos.RIGHT;
-                        Log.d(TAG_HUSKYLENS, "The Prop is on line Right");
-                    }
-                    else if ((blocks[i].x > 217) && (blocks[i].x < 244) && (blocks[i].y < 192) && (blocks[i].y > 105))
-                    {
-                        propPos = PropPos.LEFT;
-                        Log.d(TAG_HUSKYLENS, "The Prop is on line Left");
-                    }
-                    else
-                    {
-                        propPos = null;
-                        Log.d(TAG_HUSKYLENS, "No Prop was recognized");
-                    }
-                }
-
             }
         }
         return propPos;

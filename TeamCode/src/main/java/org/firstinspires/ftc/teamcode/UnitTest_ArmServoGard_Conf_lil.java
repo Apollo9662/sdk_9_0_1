@@ -62,9 +62,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@TeleOp(name="UnitTest arm servo Gard Conf", group="Unit Test")
+@TeleOp(name="UnitTest arm servo Gard lil Conf", group="Unit Test")
 //@Disabled
-public class UnitTest_ArmServoGard_Conf extends LinearOpMode {
+public class UnitTest_ArmServoGard_Conf_lil extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
 
@@ -102,7 +102,7 @@ public class UnitTest_ArmServoGard_Conf extends LinearOpMode {
                 if (press == false)
                 {
                     press = true;
-                    robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO, 1);
+                    robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO, robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO) - 0.001);
 
 
                 }
@@ -111,8 +111,8 @@ public class UnitTest_ArmServoGard_Conf extends LinearOpMode {
             {
                 if (press == false)
                 {
-                    robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO, 0);
                     press = true;
+                    robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO, robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO) + 0.001);
                 }
 
             }
@@ -120,7 +120,7 @@ public class UnitTest_ArmServoGard_Conf extends LinearOpMode {
             {
                 press = false;
             }
-            telemetry.addData("servo Position is ", "(%.2f)" , robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO));
+            telemetry.addData("servo Position is ", "(%.4f)" , robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO));
             //telemetry.addData("servo Position is  ","(%.2f)" + robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO));
             telemetry.update();
         }

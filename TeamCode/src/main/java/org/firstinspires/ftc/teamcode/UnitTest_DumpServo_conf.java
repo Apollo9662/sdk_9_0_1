@@ -80,14 +80,14 @@ public class UnitTest_DumpServo_conf extends OpMode {
     public void init() {
         gamepadEx1 = new GamepadEx(gamepad1);
         robot.init(hardwareMap,false,false);
-        robot.SetPosition(RobotHardware_apollo.DriveMotors.DUMP_SERVO,0.7);
+        robot.SetPosition(RobotHardware_apollo.DriveMotors.DUMP_SERVO, RobotHardware_apollo.SERVO_POS.DUMP_SERVO_CLOSE.Pos);
     }
 
     @Override
     public void loop() {
         gamepadEx1.readButtons();
         double pos = robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.DUMP_SERVO);
-        if (gamepadEx1.wasJustPressed(GamepadKeys.Button.BACK))
+        if (gamepadEx1.isDown(GamepadKeys.Button.BACK))
         {
             if(gamepadEx1.wasJustPressed(GamepadKeys.Button.A))
             {

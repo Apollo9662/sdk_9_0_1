@@ -31,7 +31,10 @@ package org.firstinspires.ftc.teamcode;
 
 
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.acmerobotics.dashboard.config.Config;
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 /*
@@ -61,69 +64,56 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
-
-@TeleOp(name="UnitTest arm servo Gard Conf", group="Unit Test")
+@Config
+@TeleOp(name="UnitTest lift stop servo conf", group="Unit Test")
 //@Disabled
-public class UnitTest_ArmServoGard_Conf extends LinearOpMode {
+public class UnitTest_LiftStopServo_conf extends OpMode {
 
     // Declare OpMode members for each of the 4 motors.
 
     RobotHardware_apollo robot = new RobotHardware_apollo();
-    boolean press = false;
-
+    private GamepadEx gamepadEx1;
 
     @Override
-    public void runOpMode() {
-        robot.init(hardwareMap, false, false);
-        waitForStart();
-        while (opModeIsActive())
+    public void init() {
+        gamepadEx1 = new GamepadEx(gamepad1);
+        robot.init(hardwareMap,false,false);
+        robot.SetPosition(RobotHardware_apollo.DriveMotors.DUMP_SERVO, RobotHardware_apollo.SERVO_POS.DUMP_SERVO_CLOSE.Pos);
+    }
+
+    @Override
+    public void loop() {
+        gamepadEx1.readButtons();
+        double pos = robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.LIFT_STOP_SERVO);
+        if (gamepadEx1.isDown(GamepadKeys.Button.BACK))
         {
-
-            if(gamepad1.a == true)
+            if(gamepadEx1.wasJustPressed(GamepadKeys.Button.A))
             {
-                if (press == false)
-                {
-                    press = true;
-                    robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO, robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO) + 0.01);
-
-                }
+                telemetry.addLine("press a");
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.LIFT_STOP_SERVO, pos + 0.001);
             }
-            else if(gamepad1.y == true)
+            else if(gamepadEx1.wasJustPressed(GamepadKeys.Button.Y))
             {
-                if (press == false)
-                {
-                    press = true;
-                    robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO, robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO) - 0.01);
-
-                }
-                }
-            if(gamepad1.x == true)
-            {
-                if (press == false)
-                {
-                    press = true;
-                    robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO, 1);
-
-
-                }
-                }
-            else if(gamepad1.b == true)
-            {
-                if (press == false)
-                {
-                    robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO, 0);
-                    press = true;
-                }
-
+                telemetry.addLine("press y");
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.LIFT_STOP_SERVO, pos - 0.001);
             }
-            if (gamepad1.a == false && gamepad1.b == false && gamepad1.x == false && gamepad1.y == false)
-            {
-                press = false;
-            }
-            telemetry.addData("servo Position is ", "(%.2f)" , robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO));
-            //telemetry.addData("servo Position is  ","(%.2f)" + robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO));
-            telemetry.update();
         }
+        else
+        {
+            if(gamepadEx1.wasJustPressed(GamepadKeys.Button.A))
+            {
+                telemetry.addLine("press a");
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.LIFT_STOP_SERVO, pos + 0.01);
+            }
+            else if(gamepadEx1.wasJustPressed(GamepadKeys.Button.Y))
+            {
+                telemetry.addLine("press y");
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.LIFT_STOP_SERVO, pos - 0.01);
+            }
+        }
+
+        telemetry.addData("servo Position is  ","(%.2f)", robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.LIFT_STOP_SERVO));
+        telemetry.update();
     }
 }
 

@@ -73,7 +73,7 @@ public class SensorHuskyLens_Apollo extends LinearOpMode {
     @Override
     public void runOpMode()
     {
-        huskyLens = hardwareMap.get(HuskyLens.class, "huskyl3ens");
+        huskyLens = hardwareMap.get(HuskyLens.class, "huskylens");
 
         /*
          * This sample rate limits the reads solely to allow a user time to observe

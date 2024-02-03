@@ -33,6 +33,7 @@ import android.util.Log;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.button.GamepadButton;
+import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
@@ -323,10 +324,12 @@ public class BasicOpMode_apollo_better extends OpMode {
                 robot_Ftclib.driveFieldCentric(strafeSpeed, forwardSpeed, turnSpeed,heading);
             }
         }
-
-
-
-
+        if (gamepadEx1.wasJustPressed(GamepadKeys.Button.Y)){
+            robot.SetPosition(RobotHardware_apollo.DriveMotors.DUMP_SERVO, RobotHardware_apollo.SERVO_POS.DUMP_SERVO_OPEN.Pos);
+        }
+        if (gamepadEx1.wasJustPressed(GamepadKeys.Button.A)){
+            robot.SetPosition(RobotHardware_apollo.DriveMotors.DUMP_SERVO, RobotHardware_apollo.SERVO_POS.DUMP_SERVO_CLOSE.Pos);
+        }
     }
 
     public class collectThread extends Thread
@@ -380,8 +383,16 @@ public class BasicOpMode_apollo_better extends OpMode {
 
                      */
 
-                    if (gamepadEx2.wasJustPressed(GamepadKeys.Button.LEFT_STICK_BUTTON))
+                    if (gamepadEx1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) >= 0.3)
                     {
+                        robot.SetPosition(RobotHardware_apollo.DriveMotors.LIFT_STOP_SERVO, RobotHardware_apollo.SERVO_POS.LIFT_STOP_SERVO_OPEN.Pos);
+                    }
+                    else if (gamepadEx1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) >= 0.3)
+                    {
+                        robot.SetPosition(RobotHardware_apollo.DriveMotors.LIFT_STOP_SERVO, RobotHardware_apollo.SERVO_POS.LIFT_STOP_SERVO_CLOSE.Pos);
+                    }
+                    if (gamepadEx2.wasJustPressed(GamepadKeys.Button.LEFT_STICK_BUTTON))
+                        {
                         if (robot.plane_state == RobotHardware_apollo.PLANE_STATE.OPEN)
                         {
                             robot.plane_state = RobotHardware_apollo.PLANE_STATE.CLOSE;
@@ -570,7 +581,7 @@ public class BasicOpMode_apollo_better extends OpMode {
         }
         public void DumpPixel()
         {
-            if(robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.LIFT) >= 200)
+            if(robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.LIFT) >= FIRST_LIFT)
             {
 
                 Log.d(TAG_COLLECTION,"armServoState is before " + robot.armServoState);
@@ -845,7 +856,7 @@ public class BasicOpMode_apollo_better extends OpMode {
                 try {
                     double currentPosition = robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.LIFT);
                     if (currentPosition <= FIRST_LIFT){
-                        Thread.sleep(500);
+                        Thread.sleep(1000);
                     }
                 }  catch (Exception e)
                 {

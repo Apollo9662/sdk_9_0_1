@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import android.util.Log;
+import android.widget.Switch;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -189,15 +190,15 @@ public class AutoDriveApollo_RedRight extends LinearOpMode {
 
         //driveLeft(DRIVE_SPEED,10,0);
         //driveRight(DRIVE_SPEED,10,0);
-        while ((detectedPropPos == null ) && (opModeIsActive() == true) && (TimeOut.seconds() < propDetectionTimeOut))
+        while ((detectedPropPos == null ) && (opModeIsActive() == true) && (TimeOut.seconds() <= propDetectionTimeOut))
         {
             detectedPropPos = robotHuskLens.detectPropPos();
         }
-        if (TimeOut.seconds() >= propDetectionTimeOut)
+        if (TimeOut.seconds() > propDetectionTimeOut)
         {
-            detectedPropPos = HuskyLens_Apollo.PropPos.UP;
+            detectedPropPos = HuskyLens_Apollo.PropPos.LEFT;
             //Log
-            telemetry.addLine("failed ta detect Prop");
+            telemetry.addLine("failed the detect Prop");
             sleep(1000);
         }
         telemetry.addData("Prop pos is " , detectedPropPos.toString());
@@ -205,7 +206,7 @@ public class AutoDriveApollo_RedRight extends LinearOpMode {
         robot.SetPower(RobotHardware_apollo.DriveMotors.COLLECTION,0.5);
         //if (opModeIsActive() == true)
         //{
-        //driveToProb(detectedPropPos);
+        driveToProb(detectedPropPos);
         //}
         //driveStraight(DRIVE_SPEED, 23 * 2, 0 );
 
@@ -662,6 +663,46 @@ public class AutoDriveApollo_RedRight extends LinearOpMode {
         headingOffset = getRawHeading();
         robotHeading = 0;
     }
+    public void dropPixelAtLine(double heading, HuskyLens_Apollo.PropPos probPos)
+    {
+        switch (probPos)
+        {
+            case UP:
+            {
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.DUMP_SERVO, RobotHardware_apollo.SERVO_POS.DUMP_SERVO_OPEN.Pos);
+                sleep(2000);
+                driveLeft(DRIVE_SPEED,10,heading);
+                holdHeading(TURN_SPEED,heading,1);
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.DUMP_SERVO, RobotHardware_apollo.SERVO_POS.DUMP_SERVO_CLOSE.Pos);
+                driveRight(DRIVE_SPEED,10,heading);
+                holdHeading(TURN_SPEED,heading,1);
+            }
+            break;
+            case LEFT:
+            {
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.DUMP_SERVO, RobotHardware_apollo.SERVO_POS.DUMP_SERVO_OPEN.Pos);
+                sleep(2000);
+                driveLeft(DRIVE_SPEED,10,heading);
+                holdHeading(TURN_SPEED,heading,1);
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.DUMP_SERVO, RobotHardware_apollo.SERVO_POS.DUMP_SERVO_CLOSE.Pos);
+                driveRight(DRIVE_SPEED,10,heading);
+                holdHeading(TURN_SPEED,heading,1);
+            }
+            break;
+            case RIGHT:
+            {
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.DUMP_SERVO, RobotHardware_apollo.SERVO_POS.DUMP_SERVO_OPEN.Pos);
+                sleep(2000);
+                driveLeft(DRIVE_SPEED,10,heading);
+                holdHeading(TURN_SPEED,heading,1);
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.DUMP_SERVO, RobotHardware_apollo.SERVO_POS.DUMP_SERVO_CLOSE.Pos);
+                driveRight(DRIVE_SPEED,10,heading);
+                holdHeading(TURN_SPEED,heading,1);
+            }
+            break;
+        }
+
+    }
     public void getReadyForTeleOp()
     {
         sleep(2000);
@@ -760,7 +801,7 @@ public class AutoDriveApollo_RedRight extends LinearOpMode {
          */
     }
 
-    public void driveToProb(HuskyLens_Apollo.PropPos probPos, HuskyLens_Apollo.PropColor propColor)
+    public void driveToProb(HuskyLens_Apollo.PropPos probPos)
     {
         switch (probPos)
         {
@@ -772,10 +813,10 @@ public class AutoDriveApollo_RedRight extends LinearOpMode {
                 sleep(500);
                 holdHeading(TURN_SPEED,-90,1);
                 //Todo: add drop first pixel function
+                dropPixelAtLine(-90, probPos);
                 turnToHeadingApollo(TURN_SPEED,-270);
                 sleep(500);
                 holdHeading(DRIVE_SPEED,-270,1);
-                //Todo: add drop drive to back drop function
                 driveToBackStage(-270, HuskyLens_Apollo.PropPos.UP);
                 getReadyForTeleOp();
                 Log.d(TAG_TIME, "the final time is " + time.milliseconds());
@@ -787,12 +828,12 @@ public class AutoDriveApollo_RedRight extends LinearOpMode {
                 turnToHeadingApollo(TURN_SPEED,180);
                 sleep(500);
                 //Todo: add drop first pixel function
+                dropPixelAtLine(180,probPos);
                 driveStraight(DRIVE_SPEED,-16,180);
                 turnToHeadingApollo(TURN_SPEED,-270);
                 driveStraight(DRIVE_SPEED,23,-270);
                 holdHeading(TURN_SPEED,-270,0.5);
                 sleep(500);
-                //Todo: add drop drive to back drop function
                 driveToBackStage(-270, HuskyLens_Apollo.PropPos.RIGHT);
                 getReadyForTeleOp();
                 Log.d(TAG_TIME, "the final time is " + time.milliseconds());
@@ -801,9 +842,9 @@ public class AutoDriveApollo_RedRight extends LinearOpMode {
                 time.reset();
                 driveStraight(DRIVE_SPEED,-23,0);
                 //Todo: add drop first pixel function
+                dropPixelAtLine(0,probPos);
                 turnToHeadingApollo(TURN_SPEED,-270);
                 sleep(500);
-                //Todo: add drop drive to back drop function
                 driveToBackStage(-270, HuskyLens_Apollo.PropPos.LEFT);
                 getReadyForTeleOp();
                 Log.d(TAG_TIME, "the final time is " + time.milliseconds());

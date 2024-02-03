@@ -91,6 +91,7 @@ public class RobotHardware_apollo {
     private Servo dumpServo = null;
     private Servo planeServo = null;
     private Servo armGardServo = null;
+    private Servo liftStopServo = null;
     private DcMotorEx backLeftDrive = null;
     private DcMotorEx frontLeftDrive = null;
     private DcMotorEx frontRightDrive = null;
@@ -112,6 +113,7 @@ public class RobotHardware_apollo {
             TOUCH_SENSOR2,
             LIFT,
             LIFT_SECOND,
+            LIFT_STOP_SERVO,
             COLLECTION};
     public enum PLANE_STATE
     {
@@ -120,14 +122,16 @@ public class RobotHardware_apollo {
     };
     PLANE_STATE plane_state;
     public enum SERVO_POS {
-        DUMP_SERVO_CLOSE (0.4),
-        DUMP_SERVO_OPEN (1.0),
+        DUMP_SERVO_CLOSE (0.9),
+        LIFT_STOP_SERVO_OPEN(0.75),
+        LIFT_STOP_SERVO_CLOSE(0.05),
+        DUMP_SERVO_OPEN (0.32),
         PLANE_SERVO_OPEN (0.9),
         PLANE_SERVO_CLOSE (0.25),
         ARM_SERVO_COLLECT_POS (0.95),
-        ARM_SERVO_DUMP_POS (0.44),
+        ARM_SERVO_DUMP_POS (0.48),
         ARM_SERVO_GARD_OPEN_POS (0.0),
-        ARM_SERVO_GARD_CLOSE_POS (0.32),
+        ARM_SERVO_GARD_CLOSE_POS (0.41),
         ARM_SERVO_GARD_OPEN_CLOSE_POS (0.2);
 
         public Double Pos;
@@ -205,6 +209,7 @@ public class RobotHardware_apollo {
         //touchSensor1 = apolloHardwareMap.get(TouchSensor.class, "sensor_touch1");
         touchSensor2 = apolloHardwareMap.get(TouchSensor.class, "sensor_touch");
         armServo = apolloHardwareMap.get(Servo.class, "arm_servo");//0
+        liftStopServo = apolloHardwareMap.get(Servo.class, "lift_stop_servo");//5
         planeServo = apolloHardwareMap.get(Servo.class, "plane_servo");//
         dumpServo = apolloHardwareMap.get(Servo.class, "dump_servo");//3
         armGardServo = apolloHardwareMap.get(Servo.class, "arm_gard_servo");//2
@@ -213,7 +218,7 @@ public class RobotHardware_apollo {
         lift.setDirection(DcMotorSimple.Direction.REVERSE);
         liftSecond.setDirection(DcMotorSimple.Direction.REVERSE);
         armServo.setDirection(Servo.Direction.FORWARD);
-        dumpServo.setDirection(Servo.Direction.FORWARD);
+        dumpServo.setDirection(Servo.Direction.REVERSE);
         armGardServo.setDirection(Servo.Direction.FORWARD);
         collection.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         collection.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -235,6 +240,10 @@ public class RobotHardware_apollo {
         armServoGardState = ArmServoGardState.OPEN;
         armServo.setPosition(SERVO_POS.ARM_SERVO_COLLECT_POS.Pos);
         armGardServo.setPosition(SERVO_POS.ARM_SERVO_GARD_OPEN_POS.Pos);
+        dumpServo.setPosition(SERVO_POS.DUMP_SERVO_CLOSE.Pos);
+        plane_state = PLANE_STATE.CLOSE;
+        planeServo.setPosition(SERVO_POS.PLANE_SERVO_CLOSE.Pos);
+        liftStopServo.setPosition(SERVO_POS.LIFT_STOP_SERVO_OPEN.Pos);
 
     }
     public void ImuInit()
@@ -493,6 +502,10 @@ public class RobotHardware_apollo {
             {
                 return (dumpServo.getPosition());
             }
+            case LIFT_STOP_SERVO:
+            {
+                return (liftStopServo.getPosition());
+            }
             default:
                 return (1);
         }
@@ -598,6 +611,8 @@ public class RobotHardware_apollo {
             case DUMP_SERVO:
                 dumpServo.setPosition(Position);
             break;
+            case LIFT_STOP_SERVO:
+                liftStopServo.setPosition(Position);
             default:
                 break;
         }
