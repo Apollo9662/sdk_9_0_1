@@ -276,6 +276,7 @@ public class BasicOpMode_apollo_better extends OpMode {
         telemetry.addLine("control Mod stats is " + controlMod);
         telemetry.addLine("up Side Down Mod stats is " + upSideDownMod);
         telemetry.addLine("lift stop servo stat is " + liftStopStat);
+        telemetry.addLine("lift Pos is " + robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.LIFT));
         telemetry.update();
 
     }
@@ -311,10 +312,19 @@ public class BasicOpMode_apollo_better extends OpMode {
             fieldCentricDrive = !fieldCentricDrive;
         }
         double heading = robot_Ftclib.getRobotYawPitchRollAngles();
-        if (gamepadEx1.wasJustPressed(GamepadKeys.Button.Y))
+        if (gamepad1.y)
         {
+            if(!pressDrive)
+            {
+                pressDrive = true;
+                controlMod = !controlMod;
+            }
             //upSideDownMod = !upSideDownMod;
-            controlMod = !controlMod;
+
+        }
+        else
+        {
+            pressDrive = false;
         }
         if (!fieldCentricDrive)
         {
@@ -337,12 +347,6 @@ public class BasicOpMode_apollo_better extends OpMode {
             {
                 robot_Ftclib.driveFieldCentric(strafeSpeed, forwardSpeed, turnSpeed,heading);
             }
-        }
-        if (gamepadEx1.wasJustPressed(GamepadKeys.Button.Y)){
-            robot.SetPosition(RobotHardware_apollo.DriveMotors.DUMP_SERVO, RobotHardware_apollo.SERVO_POS.DUMP_SERVO_OPEN.Pos);
-        }
-        if (gamepadEx1.wasJustPressed(GamepadKeys.Button.A)){
-            robot.SetPosition(RobotHardware_apollo.DriveMotors.DUMP_SERVO, RobotHardware_apollo.SERVO_POS.DUMP_SERVO_CLOSE.Pos);
         }
     }
 
@@ -598,8 +602,8 @@ public class BasicOpMode_apollo_better extends OpMode {
         }
         public void DumpPixel()
         {
-            if(robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.LIFT) >= FIRST_LIFT)
-            {
+            //if(robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.LIFT) >= FIRST_LIFT)
+            //{
 
                 Log.d(TAG_COLLECTION,"armServoState is before " + robot.armServoState);
                 Log.d(TAG_COLLECTION,"armServoGardState is before " + robot.armServoGardState);
@@ -631,7 +635,7 @@ public class BasicOpMode_apollo_better extends OpMode {
 
                 Log.d(TAG_COLLECTION,"armServoState is next " + robot.armServoState);
                 Log.d(TAG_COLLECTION,"armServoGardState is next " + robot.armServoGardState);
-            }
+            //}
         }
     }
     // ezra test check github
@@ -822,7 +826,7 @@ public class BasicOpMode_apollo_better extends OpMode {
                                     liftXStat = LiftXStat.SECOND;
                                 break;
                                 case SECOND:
-                                    goTo(697);
+                                    goTo(535);
                                     LIFT_IsBusy = robot.IsBusy(RobotHardware_apollo.DriveMotors.LIFT);
                                     while ((LIFT_IsBusy) && (TimeOut.seconds() > TimeOutSec))
                                     {

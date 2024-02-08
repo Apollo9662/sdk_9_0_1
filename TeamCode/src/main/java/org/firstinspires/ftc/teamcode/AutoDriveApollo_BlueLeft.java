@@ -84,9 +84,9 @@ import com.qualcomm.robotcore.util.Range;
  *  Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Apollo Autonomous Red right", group="Apollo")
+@Autonomous(name="Apollo Autonomous Blue left", group="Apollo")
 //@Disabled
-public class AutoDriveApollo_BlueRight extends LinearOpMode {
+public class AutoDriveApollo_BlueLeft extends LinearOpMode {
 
     /* Declare OpMode members. */
     private ElapsedTime time = new ElapsedTime();
@@ -161,7 +161,7 @@ public class AutoDriveApollo_BlueRight extends LinearOpMode {
     @Override
     public void runOpMode() {
         boolean initIMU = robot.init(hardwareMap,true,true);
-        boolean initHuskyLens = robotHuskLens.initHuskyLens(robot.getHuskyLens(), HuskyLens_Apollo.PropColor.RED);
+        boolean initHuskyLens = robotHuskLens.initHuskyLens(robot.getHuskyLens(), HuskyLens_Apollo.PropColor.BLUE);
         if (initIMU == false)
         {
             telemetry.addLine("failed to init Imu (stop!!!!!!!!!!!)");
@@ -707,7 +707,7 @@ public class AutoDriveApollo_BlueRight extends LinearOpMode {
             case RIGHT:
             {
                 //driveStraight(DRIVE_SPEED,10,heading);
-                driveRight(DRIVE_SPEED,1,heading);
+                driveRight(DRIVE_SPEED,3,heading);
                 robot.SetPosition(RobotHardware_apollo.DriveMotors.DUMP_SERVO, RobotHardware_apollo.SERVO_POS.DUMP_SERVO_OPEN.Pos);
                 sleep(2000);
                 driveLeft(DRIVE_SPEED,14,heading);
@@ -878,7 +878,7 @@ public class AutoDriveApollo_BlueRight extends LinearOpMode {
                 getReadyForTeleOp();
                 Log.d(TAG_TIME, "the final time is " + time.milliseconds());
             break;
-            case RIGHT:
+            case LEFT:
                 time.reset();
                 driveStraight(DRIVE_SPEED,-10,0);
                 holdHeading(TURN_SPEED,0,0.5);
@@ -903,14 +903,16 @@ public class AutoDriveApollo_BlueRight extends LinearOpMode {
                  //*/
                 Log.d(TAG_TIME, "the final time is " + time.milliseconds());
             break;
-            case LEFT:
+            case RIGHT:
                 time.reset();
-                driveStraight(DRIVE_SPEED,-24,0);
+                driveStraight(DRIVE_SPEED,-27,0);
+                holdHeading(TURN_SPEED,0,0.5);
+                turnToHeadingApollo(TURN_SPEED,180);
                 //Todo: add drop first pixel function
-                dropPixelAtLine(0,probPos);
-                turnToHeadingApollo(TURN_SPEED,-270);
-                sleep(500);
-                driveToBackStage(-270, HuskyLens_Apollo.PropPos.LEFT);
+                dropPixelAtLine(180,probPos);
+                turnToHeadingApollo(TURN_SPEED,270);
+                holdHeading(TURN_SPEED,270,0.5);
+                driveToBackStage(270, HuskyLens_Apollo.PropPos.LEFT);
                 getReadyForTeleOp();
                 Log.d(TAG_TIME, "the final time is " + time.milliseconds());
             break;
