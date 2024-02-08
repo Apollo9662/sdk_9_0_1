@@ -33,13 +33,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.dfrobot.HuskyLens;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.internal.system.Deadline;
 
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 /*
@@ -57,12 +55,12 @@ import java.util.concurrent.TimeUnit;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
-@TeleOp(name = "Sensor: HuskyLens Apollo", group = "UnitTest")
+@TeleOp(name = "Sensor: HuskyLens func Apollo", group = "UnitTest")
 //@Disabled
-public class SensorHuskyLens_Apollo extends LinearOpMode {
+public class SensorHuskyLens_Apollo_func extends LinearOpMode {
 
     private final int READ_PERIOD = 1;
-
+    double middle = 180;
     private HuskyLens huskyLens;
     private boolean isPress = false;
     private enum HuskyLens_State {TAG_RECOGNITION,
@@ -166,11 +164,11 @@ public class SensorHuskyLens_Apollo extends LinearOpMode {
             {
                 isPress = false;
             }
-            if (huskyLensState ==HuskyLens_State.COLOR_RECOGNITION)
+            if (huskyLensState == HuskyLens_State.COLOR_RECOGNITION)
             {
                 COLOR_RECOGNITION();
             }
-            if (huskyLensState ==HuskyLens_State.TAG_RECOGNITION)
+            if (huskyLensState == HuskyLens_State.TAG_RECOGNITION)
             {
                 TAG_RECOGNITION();
             }
@@ -180,7 +178,7 @@ public class SensorHuskyLens_Apollo extends LinearOpMode {
             for (int i = 0; i < blocks.length; i++) {
                 telemetry.addData("Block", blocks[i].toString());
             }
-            telemetry.update();
+
         }
 
     }
@@ -195,16 +193,17 @@ public class SensorHuskyLens_Apollo extends LinearOpMode {
         {
             for (int i = 0; i < blocks.length; i++)
             {
-                if ((blocks[i].x > 88) && (blocks[i].x < 160) &&(blocks[i].y > 40) && (blocks[i].y < 60))
+                if (blocks[i].x < middle)
                 {
                     telemetry.addLine("The Prop is on line Up");
                 }
-                else if ((blocks[i].x > 217) && (blocks[i].x < 244) && (blocks[i].y < 192) && (blocks[i].y > 105))
+                else if (blocks[i].x > middle)
                 {
                     telemetry.addLine("The Prop is on line right");
                 }
             }
 
         }
+        telemetry.update();
     }
 }

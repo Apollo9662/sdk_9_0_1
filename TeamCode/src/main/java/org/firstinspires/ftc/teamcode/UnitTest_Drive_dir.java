@@ -104,7 +104,7 @@ public class UnitTest_Drive_dir extends OpMode {
 
      */
     final String TAG_DRIVE = "Drive";
-    public static double Power = 0.2;
+    public static double Power = 0.8;
     @Override
     public void init() {
         robot.init(hardwareMap,true,false);
@@ -119,33 +119,33 @@ public class UnitTest_Drive_dir extends OpMode {
     public void loop() {
         if (gamepad1.y)
         {
-            robot.SetPower(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE, -0.8);
-            robot.SetPower(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE, -0.8);
-            robot.SetPower(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE, -0.8);
-            robot.SetPower(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE, -0.8);
+            robot.SetPower(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE, -Power);
+            robot.SetPower(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE, -Power);
+            robot.SetPower(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE, -Power);
+            robot.SetPower(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE, -Power);
         }
         if (gamepad1.a)
         {
-            robot.SetPower(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE, 0.8);
-            robot.SetPower(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE, 0.8);
-            robot.SetPower(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE, 0.8);
-            robot.SetPower(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE, 0.8);
+            robot.SetPower(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE, Power);
+            robot.SetPower(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE, Power);
+            robot.SetPower(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE, Power);
+            robot.SetPower(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE, Power);
         }
         else if (gamepad1.b)
         {
             Log.d(TAG_DRIVE, "press a");
-            robot.SetPower(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE, 0.8);
-            robot.SetPower(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE, -0.8);
-            robot.SetPower(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE, -0.8);
-            robot.SetPower(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE, 0.8);
+            robot.SetPower(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE, Power);
+            robot.SetPower(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE, -Power);
+            robot.SetPower(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE, -Power);
+            robot.SetPower(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE, Power);
         }
         else if (gamepad1.x)
         {
             Log.d(TAG_DRIVE, "press a");
-            robot.SetPower(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE, -0.8);
-            robot.SetPower(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE, 0.8);
-            robot.SetPower(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE, 0.8);
-            robot.SetPower(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE, -0.8);
+            robot.SetPower(RobotHardware_apollo.DriveMotors.FRONT_RIGHT_DRIVE, -Power);
+            robot.SetPower(RobotHardware_apollo.DriveMotors.FRONT_LEFT_DRIVE, Power);
+            robot.SetPower(RobotHardware_apollo.DriveMotors.BACK_RIGHT_DRIVE, Power);
+            robot.SetPower(RobotHardware_apollo.DriveMotors.BACK_LEFT_DRIVE, -Power);
         }
         else
         {

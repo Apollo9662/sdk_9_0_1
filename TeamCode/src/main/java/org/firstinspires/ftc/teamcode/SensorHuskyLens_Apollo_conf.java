@@ -32,14 +32,17 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode;
 
+import android.util.Log;
+
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.dfrobot.HuskyLens;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.checkerframework.checker.units.qual.C;
 import org.firstinspires.ftc.robotcore.internal.system.Deadline;
 
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 /*
@@ -57,22 +60,28 @@ import java.util.concurrent.TimeUnit;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
-@TeleOp(name = "Sensor: HuskyLens Apollo", group = "UnitTest")
+@Config
+@TeleOp(name = "Sensor: HuskyLens conf Apollo", group = "UnitTest")
 //@Disabled
-public class SensorHuskyLens_Apollo extends LinearOpMode {
+public class SensorHuskyLens_Apollo_conf extends OpMode {
 
     private final int READ_PERIOD = 1;
 
+    final String TAG_HUSKYLENS = "HuskyLens_Apollo";
+    private double Offset = 35;
+    public static double UpX_Max = 182;
+    public static double UpX_Min = 185;
+    public static double UpY_Max = 105;
+    public static double UpY_Min = 130;
+    public static double RightX_Max = 71;
+    public static double RightX_Min = 125;
+    public static double RightY_Max = 100;
+    public static double RightY_Min = 100;
     private HuskyLens huskyLens;
     private boolean isPress = false;
-    private enum HuskyLens_State {TAG_RECOGNITION,
-                 COLOR_RECOGNITION};
-    HuskyLens.Block[] blocks;
 
-    private HuskyLens_State huskyLensState;
     @Override
-    public void runOpMode()
-    {
+    public void init() {
         huskyLens = hardwareMap.get(HuskyLens.class, "huskylens");
 
         /*
@@ -80,12 +89,6 @@ public class SensorHuskyLens_Apollo extends LinearOpMode {
          * what is happening on the Driver Station telemetry.  Typical applications
          * would not likely rate limit.
          */
-        Deadline rateLimit = new Deadline(READ_PERIOD, TimeUnit.SECONDS);
-
-        /*
-         * Immediately expire so that the first time through we'll do the read.
-         */
-        rateLimit.expire();
 
         /*
          * Basic check to see if the device is alive and communicating.  This is not
@@ -119,71 +122,54 @@ public class SensorHuskyLens_Apollo extends LinearOpMode {
 
 
         telemetry.update();
-        waitForStart();
+    }
 
-        /*
-         * Looking for AprilTags per the call to selectAlgorithm() above.  A handy grid
-         * for testing may be found at https://wiki.dfrobot.com/HUSKYLENS_V1.0_SKU_SEN0305_SEN0336#target_20.
-         *
-         * Note again that the device only recognizes the 36h11 family of tags out of the box.
-         */
-        while(opModeIsActive()) {
-            if (!rateLimit.hasExpired()) {
-                continue;
-            }
-            rateLimit.reset();
-
-
-            /*
-             * All algorithms, except for LINE_TRACKING, return a list of Blocks where a
-             * Block represents the outline of a recognized object along with its ID number.
-             * ID numbers allow you to identify what the device saw.  See the HuskyLens documentation
-             * referenced in the header comment above for more information on IDs and how to
-             * assign them to objects.
-             *
-             * Returns an empty array if no objects are seen.
-             */
-            blocks = huskyLens.blocks();
-            if(gamepad1.a == true)
+    @Override
+    public void loop() {
+        blocks = huskyLens.blocks();
+        if(gamepad1.a == true)
+        {
+            if (isPress = false)
             {
-                if (isPress = false)
-                {
-                    isPress = true;
-                    huskyLens.selectAlgorithm(HuskyLens.Algorithm.COLOR_RECOGNITION);
-                    huskyLensState = HuskyLens_State.COLOR_RECOGNITION;
-                }
+                isPress = true;
+                huskyLens.selectAlgorithm(HuskyLens.Algorithm.COLOR_RECOGNITION);
+                huskyLensState = HuskyLens_State.COLOR_RECOGNITION;
             }
-            else if(gamepad1.b == true)
+        }
+        else if(gamepad1.b == true)
+        {
+            if (isPress = false)
             {
-                if (isPress = false)
-                {
-                    isPress = true;
-                    huskyLens.selectAlgorithm(HuskyLens.Algorithm.TAG_RECOGNITION);
-                    huskyLensState = HuskyLens_State.COLOR_RECOGNITION;
-                }
+                isPress = true;
+                huskyLens.selectAlgorithm(HuskyLens.Algorithm.TAG_RECOGNITION);
+                huskyLensState = HuskyLens_State.COLOR_RECOGNITION;
             }
-            if (gamepad1.a == false && gamepad1.b == false)
-            {
-                isPress = false;
-            }
-            if (huskyLensState ==HuskyLens_State.COLOR_RECOGNITION)
-            {
-                COLOR_RECOGNITION();
-            }
-            if (huskyLensState ==HuskyLens_State.TAG_RECOGNITION)
-            {
-                TAG_RECOGNITION();
-            }
-
-
-            telemetry.addData("Block count", blocks.length);
-            for (int i = 0; i < blocks.length; i++) {
-                telemetry.addData("Block", blocks[i].toString());
-            }
-            telemetry.update();
+        }
+        if (gamepad1.a == false && gamepad1.b == false)
+        {
+            isPress = false;
+        }
+        if (huskyLensState == HuskyLens_State.COLOR_RECOGNITION)
+        {
+            COLOR_RECOGNITION();
+        }
+        if (huskyLensState == HuskyLens_State.TAG_RECOGNITION)
+        {
+            TAG_RECOGNITION();
         }
 
+
+        telemetry.addData("Block count", blocks.length);
+        for (int i = 0; i < blocks.length; i++) {
+            telemetry.addData("Block", blocks[i].toString());
+        }
     }
+
+    private enum HuskyLens_State {TAG_RECOGNITION,
+                 COLOR_RECOGNITION};
+    HuskyLens.Block[] blocks;
+
+    private HuskyLens_State huskyLensState;
     private void TAG_RECOGNITION()
     {
 
@@ -195,16 +181,19 @@ public class SensorHuskyLens_Apollo extends LinearOpMode {
         {
             for (int i = 0; i < blocks.length; i++)
             {
-                if ((blocks[i].x > 88) && (blocks[i].x < 160) &&(blocks[i].y > 40) && (blocks[i].y < 60))
+                if (((UpX_Min + Offset <= blocks[i].x) || (UpX_Min - Offset <= blocks[i].x)) && ((blocks[i].x <= UpX_Max + Offset) || (blocks[i].x <= UpX_Max - Offset)) && ((blocks[i].y >= UpY_Min + Offset) || blocks[i].y >= UpY_Min - Offset)  && (blocks[i].y <= UpY_Max + Offset) || (blocks[i].y <= UpY_Max - Offset))
                 {
                     telemetry.addLine("The Prop is on line Up");
+                    Log.d(TAG_HUSKYLENS, "The Prop is on line Up");
                 }
-                else if ((blocks[i].x > 217) && (blocks[i].x < 244) && (blocks[i].y < 192) && (blocks[i].y > 105))
+                else if (((RightX_Min + Offset <= blocks[i].x) || (RightX_Min - Offset<= blocks[i].x)) && ((blocks[i].x <= RightX_Max + Offset) || (blocks[i].x <= RightX_Max - Offset)) && ((blocks[i].y >= RightY_Min + Offset) || blocks[i].y >= RightY_Min - Offset)  && (blocks[i].y <= RightY_Max + Offset) || (blocks[i].y <= RightY_Max - Offset))
                 {
                     telemetry.addLine("The Prop is on line right");
+                    Log.d(TAG_HUSKYLENS, "The Prop is on line right");
                 }
             }
 
         }
+        telemetry.update();
     }
 }

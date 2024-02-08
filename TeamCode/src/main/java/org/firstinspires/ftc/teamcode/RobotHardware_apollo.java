@@ -126,13 +126,14 @@ public class RobotHardware_apollo {
         LIFT_STOP_SERVO_OPEN(0.75),
         LIFT_STOP_SERVO_CLOSE(0.05),
         DUMP_SERVO_OPEN (0.32),
-        PLANE_SERVO_OPEN (0.9),
-        PLANE_SERVO_CLOSE (0.25),
-        ARM_SERVO_COLLECT_POS (0.95),
-        ARM_SERVO_DUMP_POS (0.48),
+        PLANE_SERVO_CLOSE (0.9),
+        PLANE_SERVO_OPEN (0.25),
+        ARM_SERVO_COLLECT_POS (0.96),
+        ARM_SERVO_DUMP_POS (0.44),
+        ARM_SERVO_DUMP_POS_AUTO_DRIVE (0.41),
         ARM_SERVO_GARD_OPEN_POS (0.0),
-        ARM_SERVO_GARD_CLOSE_POS (0.41),
-        ARM_SERVO_GARD_OPEN_CLOSE_POS (0.2);
+        ARM_SERVO_GARD_CLOSE_POS (0.44),
+        ARM_SERVO_GARD_OPEN_CLOSE_POS (0.30);
 
         public Double Pos;
 
@@ -160,8 +161,9 @@ public class RobotHardware_apollo {
      * <p>
      * All of the hardware devices are accessed via the hardware map, and initialized.
      */
-    public void init(HardwareMap apolloHardwareMap, boolean initDrive , boolean initImu)
+    public boolean init(HardwareMap apolloHardwareMap, boolean initDrive , boolean initImu)
     {
+        boolean intSucceeded = true;
         if (initDrive)
         {
             backLeftDrive = apolloHardwareMap.get(DcMotorEx.class, "back_left_drive"); //0
@@ -169,7 +171,7 @@ public class RobotHardware_apollo {
             backRightDrive = apolloHardwareMap.get(DcMotorEx.class, "back_right_drive"); //2
             frontRightDrive = apolloHardwareMap.get(DcMotorEx.class, "front_right_drive");//3
             backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-            frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+            frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
             backRightDrive.setDirection(DcMotor.Direction.FORWARD);
             frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
             backLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -190,6 +192,7 @@ public class RobotHardware_apollo {
                 if (imu.initialize(parameters) == false)
                 {
                     Log.d(TAG_HARDWARE, "initialization of imu2 failed");
+                    intSucceeded = false;
                 }
                 else
                 {
@@ -200,6 +203,7 @@ public class RobotHardware_apollo {
             {
                 Log.d(TAG_HARDWARE, "initialization of imu succeeded");
             }
+
 
         }
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
@@ -226,6 +230,7 @@ public class RobotHardware_apollo {
         lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         liftSecond.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftSecond.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        return intSucceeded;
     }
     public void SetAllMotorsZeroPowerBehavior(DcMotor.ZeroPowerBehavior myZeroPowerBehavior)
     {

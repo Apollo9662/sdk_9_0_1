@@ -66,6 +66,8 @@ public class BasicOpMode_apollo_better extends OpMode {
 
 
     private ElapsedTime runtime = new ElapsedTime();
+    private ElapsedTime TimeOut = new ElapsedTime();
+    private double TimeOutSec = 3;
     //double Test = 0;
     public static double collectionSpeed = 0.8;
     boolean press = false;
@@ -75,10 +77,11 @@ public class BasicOpMode_apollo_better extends OpMode {
     boolean pressCollectionLift = false;
     boolean pressLift = false;
     boolean pressDrive = false;
-    final int FIRST_LIFT = 855;
+    boolean LIFT_IsBusy;
+    final int FIRST_LIFT = 1000;
     final int SECOND_LIFT = 1710;
     final int THIRD_LIFT = 2565;
-    final int FOURTH_LIFT = 3420;
+    final int FOURTH_LIFT = 2141;
     int liftMaxHight = 3420;
     final double POWER_LIFT = 1;
     double liftPower = 0;
@@ -105,6 +108,18 @@ public class BasicOpMode_apollo_better extends OpMode {
         AUTO_CONTROL_ERROR,
         RESETING_INCODER};
     int pos;
+    enum LiftStopStat
+    {
+        OPEN,
+        CLOSE
+    }
+    enum LiftXStat
+    {
+        FIRST,
+        SECOND
+    }
+    LiftXStat liftXStat;
+    LiftStopStat liftStopStat;
     boolean stayInPosIsActive = false;
     //ConceptTensorFlowObjectDetection_Apollo detection;
     RobotHardware_apollo robot = new RobotHardware_apollo();
@@ -120,6 +135,8 @@ public class BasicOpMode_apollo_better extends OpMode {
         robot.init(hardwareMap, false, false);
         robot_Ftclib.init(hardwareMap);
         robot.ServoInit();
+        liftStopStat = LiftStopStat.OPEN;
+        liftXStat = LiftXStat.FIRST;
         robot.plane_state = RobotHardware_apollo.PLANE_STATE.CLOSE;
         robot_Ftclib.SetAllMotorsZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         //robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT, DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -258,6 +275,7 @@ public class BasicOpMode_apollo_better extends OpMode {
         telemetry.addLine("field Centric Drive stats is " + fieldCentricDrive);
         telemetry.addLine("control Mod stats is " + controlMod);
         telemetry.addLine("up Side Down Mod stats is " + upSideDownMod);
+        telemetry.addLine("lift stop servo stat is " + liftStopStat);
         telemetry.update();
 
     }
@@ -293,14 +311,10 @@ public class BasicOpMode_apollo_better extends OpMode {
             fieldCentricDrive = !fieldCentricDrive;
         }
         double heading = robot_Ftclib.getRobotYawPitchRollAngles();
-        if (gamepadEx1.wasJustPressed(GamepadKeys.Button.B))
+        if (gamepadEx1.wasJustPressed(GamepadKeys.Button.Y))
         {
             //upSideDownMod = !upSideDownMod;
-            controlMod = false;
-        }
-        else if (gamepadEx1.wasJustPressed(GamepadKeys.Button.X))
-        {
-            controlMod = true;
+            controlMod = !controlMod;
         }
         if (!fieldCentricDrive)
         {
@@ -386,10 +400,12 @@ public class BasicOpMode_apollo_better extends OpMode {
                     if (gamepadEx1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) >= 0.3)
                     {
                         robot.SetPosition(RobotHardware_apollo.DriveMotors.LIFT_STOP_SERVO, RobotHardware_apollo.SERVO_POS.LIFT_STOP_SERVO_OPEN.Pos);
+                        liftStopStat = LiftStopStat.OPEN;
                     }
                     else if (gamepadEx1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) >= 0.3)
                     {
                         robot.SetPosition(RobotHardware_apollo.DriveMotors.LIFT_STOP_SERVO, RobotHardware_apollo.SERVO_POS.LIFT_STOP_SERVO_CLOSE.Pos);
+                        liftStopStat = LiftStopStat.CLOSE;
                     }
                     if (gamepadEx2.wasJustPressed(GamepadKeys.Button.LEFT_STICK_BUTTON))
                         {
@@ -475,6 +491,7 @@ public class BasicOpMode_apollo_better extends OpMode {
                         {
                             pressCollectionServo = true;
                             CollectPixel();
+
                             liftTread.goTo(0);
                         }
                     }
@@ -642,12 +659,21 @@ public class BasicOpMode_apollo_better extends OpMode {
                 boolean liftPositionA = gamepad2.a;
                 boolean liftPositionB = gamepad2.b;
                 boolean liftPositionX = gamepad2.x;
+                boolean liftReset = gamepadEx1.isDown(GamepadKeys.Button.RIGHT_BUMPER);
                 Log.d(TAG_LIFT,"liftPositionY " + liftPositionY);
                 Log.d(TAG_LIFT,"liftPositionA " + liftPositionA);
                 Log.d(TAG_LIFT,"liftPositionB " + liftPositionB);
                 Log.d(TAG_LIFT,"liftPositionX " + liftPositionX);
                 Log.d(TAG_LIFT,"pos is " + robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.LIFT));
 
+                if (liftReset)
+                {
+                    //liftState = LiftState.RESETING_INCODER;
+                    liftPower = 0;
+                    robot.SetPower(RobotHardware_apollo.DriveMotors.LIFT, liftPower);
+                    robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT , DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    telemetry.addLine("lift is at pos 0");
+                }
                 if (liftUp == false)
                 {
                     resetIncoder();
@@ -681,7 +707,7 @@ public class BasicOpMode_apollo_better extends OpMode {
                         setGateServoToClose();
                         liftState = LiftState.MANUAL_CONTROL;
                         Log.d(TAG_LIFT, "lift up pos " + robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.LIFT));
-                        robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT , DcMotor.RunMode.RUN_USING_ENCODER);
+                        robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT , DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                         liftPower = POWER_LIFT;
                         inPosition = false;
                     }
@@ -701,13 +727,14 @@ public class BasicOpMode_apollo_better extends OpMode {
                     {
                         //robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO, ARM_SERVO_COLLECT_POS);
                         //collectThread.CollectPixel();
+                        liftState = LiftState.MANUAL_CONTROL;
+                        Log.d(TAG_LIFT, "lift down pos " + robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.LIFT));
+                        robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT , DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                        liftPower = -POWER_LIFT;
+                        inPosition = false;
+                        /*
                         if (robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.LIFT) >= 50)
                         {
-                            liftState = LiftState.MANUAL_CONTROL;
-                            Log.d(TAG_LIFT, "lift down pos " + robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.LIFT));
-                            robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT , DcMotor.RunMode.RUN_USING_ENCODER);
-                            liftPower = -POWER_LIFT;
-                            inPosition = false;
                         }
                         else
                         {
@@ -723,6 +750,8 @@ public class BasicOpMode_apollo_better extends OpMode {
                                 //stayInPos();
                             }
                         }
+
+                         */
                     }
                 }
                 else if (liftPositionY == true)
@@ -734,6 +763,7 @@ public class BasicOpMode_apollo_better extends OpMode {
                         pressLift = true;
                         try {
                             goTo(FIRST_LIFT);
+                            collectThread.DumpPixel();
                         }  catch (Exception e)
                         {
                             Log.d(TAG_COLLECTION_THREAD, "catch exception: " + e.toString());
@@ -751,6 +781,7 @@ public class BasicOpMode_apollo_better extends OpMode {
                         pressLift = true;
                         try {
                             goTo(SECOND_LIFT);
+                            collectThread.DumpPixel();
                         }  catch (Exception e)
                         {
                             Log.d(TAG_COLLECTION_THREAD, "catch exception: " + e.toString());
@@ -767,6 +798,7 @@ public class BasicOpMode_apollo_better extends OpMode {
                         pressLift = true;
                         try {
                             goTo(THIRD_LIFT);
+                            collectThread.DumpPixel();
                         }  catch (Exception e)
                         {
                             Log.d(TAG_COLLECTION_THREAD, "catch exception: " + e.toString());
@@ -782,7 +814,24 @@ public class BasicOpMode_apollo_better extends OpMode {
                         //robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO, robot.ARM_SERVO_COLLECT_POS);
                         pressLift = true;
                         try {
-                            goTo(FOURTH_LIFT);
+                            switch (liftXStat)
+                            {
+                                case FIRST:
+                                    goTo(FOURTH_LIFT);
+                                    collectThread.DumpPixel();
+                                    liftXStat = LiftXStat.SECOND;
+                                break;
+                                case SECOND:
+                                    goTo(697);
+                                    LIFT_IsBusy = robot.IsBusy(RobotHardware_apollo.DriveMotors.LIFT);
+                                    while ((LIFT_IsBusy) && (TimeOut.seconds() > TimeOutSec))
+                                    {
+                                        LIFT_IsBusy = robot.IsBusy(RobotHardware_apollo.DriveMotors.LIFT);
+                                    }
+                                    robot.SetPosition(RobotHardware_apollo.DriveMotors.LIFT_STOP_SERVO, RobotHardware_apollo.SERVO_POS.LIFT_STOP_SERVO_CLOSE.Pos);
+                                    //collectThread.DumpPixel();
+                                break;
+                            }
                         }  catch (Exception e)
                         {
                             Log.d(TAG_COLLECTION_THREAD, "catch exception: " + e.toString());
@@ -852,10 +901,12 @@ public class BasicOpMode_apollo_better extends OpMode {
             if (Pos != 0){
                 setGateServoToClose();
             }
-            if (Pos == 0){
+            if (Pos == 0)
+            {
                 try {
                     double currentPosition = robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.LIFT);
-                    if (currentPosition <= FIRST_LIFT){
+                    if (currentPosition < SECOND_LIFT)
+                    {
                         Thread.sleep(1000);
                     }
                 }  catch (Exception e)

@@ -134,7 +134,12 @@ public class RobotHardware_apollo_FtcLib {
         backRightDrive.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
         frontRightDrive.setInverted(true);
+        /*
+        backRightDrive.setInverted(true);
         frontLeftDrive.setInverted(true);
+        backLeftDrive.setInverted(true);
+
+         */
         mecanumDriveBase = new MecanumDrive(frontLeftDrive, frontRightDrive, backLeftDrive, backRightDrive);
 
     }
