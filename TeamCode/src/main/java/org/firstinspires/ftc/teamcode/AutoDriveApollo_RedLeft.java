@@ -712,7 +712,7 @@ public class AutoDriveApollo_RedLeft extends LinearOpMode {
         robot.SetPower(RobotHardware_apollo.DriveMotors.LIFT,1);
         TimeOut.reset();
         LIFT_IsBusy = robot.IsBusy(RobotHardware_apollo.DriveMotors.LIFT);
-        while ((LIFT_IsBusy) && (TimeOut.seconds() > TimeOutSec))
+        while ((LIFT_IsBusy) && (TimeOut.seconds() < TimeOutSec))
         {
             LIFT_IsBusy = robot.IsBusy(RobotHardware_apollo.DriveMotors.LIFT);
         }
@@ -727,7 +727,7 @@ public class AutoDriveApollo_RedLeft extends LinearOpMode {
         robot.SetPower(RobotHardware_apollo.DriveMotors.LIFT,1);
         TimeOut.reset();
         LIFT_IsBusy = robot.IsBusy(RobotHardware_apollo.DriveMotors.LIFT);
-        while ((LIFT_IsBusy) && (TimeOut.seconds() > TimeOutSec))
+        while ((LIFT_IsBusy) && (TimeOut.seconds() < TimeOutSec))
         {
             LIFT_IsBusy = robot.IsBusy(RobotHardware_apollo.DriveMotors.LIFT);
         }

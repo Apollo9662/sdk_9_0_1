@@ -82,6 +82,7 @@ public class BasicOpMode_apollo_better extends OpMode {
     boolean pressDrive = false;
     boolean LIFT_IsBusy;
     final int FIRST_LIFT = 1000;
+    double servoCurrentPosition;
     final int SECOND_LIFT = 1710;
     final int THIRD_LIFT = 2565;
     final int FOURTH_LIFT = 2141;
@@ -563,9 +564,9 @@ public class BasicOpMode_apollo_better extends OpMode {
                         if (pressCollectionConf)
                         {
                             pressCollectionConf = false;
-                            double currentPosition = robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO);
-                            currentPosition += 0.01;
-                            robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO, currentPosition);
+                            servoCurrentPosition = robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO);
+                            servoCurrentPosition += 0.01;
+                            robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO, servoCurrentPosition);
                         }
                     }
                     else if (gamepad1.dpad_left)
@@ -573,9 +574,9 @@ public class BasicOpMode_apollo_better extends OpMode {
                         if (pressCollectionConf)
                         {
                             pressCollectionConf = false;
-                            double currentPosition = robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO);
-                            currentPosition -= 0.01;
-                            robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO, currentPosition);
+                            servoCurrentPosition = robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO);
+                            servoCurrentPosition -= 0.01;
+                            robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO, servoCurrentPosition);
                         }
                     }
                     else
@@ -654,7 +655,9 @@ public class BasicOpMode_apollo_better extends OpMode {
         {
             if (robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.LIFT) >= 200)
             {
-
+                servoCurrentPosition = robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO);
+                robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO,servoCurrentPosition);
+                /*
                 if(robot.armServoGardState == RobotHardware_apollo.ArmServoGardState.OPEN)
                 {
                     //robot.armServoGardState = RobotHardware_apollo.ArmServoGardState.OPEN;
@@ -667,6 +670,8 @@ public class BasicOpMode_apollo_better extends OpMode {
                     //armServoGardState = ArmServoGardState.CLOSE;
                     robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO, RobotHardware_apollo.SERVO_POS.ARM_SERVO_GARD_CLOSE_POS.Pos);
                 }
+
+                 */
             }
         }
         public void collectionMotor (double speed)
@@ -707,7 +712,7 @@ public class BasicOpMode_apollo_better extends OpMode {
                         robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO, RobotHardware_apollo.SERVO_POS.ARM_SERVO_GARD_OPEN_CLOSE_POS.Pos);
                         try
                         {
-                            Thread.sleep(1000);
+                            Thread.sleep(750);
                         }  catch (Exception e)
                         {
                             Log.d(TAG_COLLECTION_THREAD, "catch exception: " + e.toString());
@@ -946,7 +951,7 @@ public class BasicOpMode_apollo_better extends OpMode {
                                 case SECOND:
                                     goTo(250);//0/250
                                     LIFT_IsBusy = robot.IsBusy(RobotHardware_apollo.DriveMotors.LIFT);
-                                    while ((LIFT_IsBusy) && (TimeOut.seconds() > TimeOutSec))
+                                    while ((LIFT_IsBusy) && (TimeOut.seconds() < TimeOutSec))
                                     {
                                         LIFT_IsBusy = robot.IsBusy(RobotHardware_apollo.DriveMotors.LIFT);
                                     }
