@@ -128,12 +128,12 @@ public class RobotHardware_apollo {
         DUMP_SERVO_OPEN (0.32),
         PLANE_SERVO_CLOSE (0.9),
         PLANE_SERVO_OPEN (0.25),
-        ARM_SERVO_COLLECT_POS (0.96),
-        ARM_SERVO_DUMP_POS (0.44),
-        ARM_SERVO_DUMP_POS_AUTO_DRIVE (0.41),
-        ARM_SERVO_GARD_OPEN_POS (0.0),
-        ARM_SERVO_GARD_CLOSE_POS (0.44),
-        ARM_SERVO_GARD_OPEN_CLOSE_POS (0.30);
+        ARM_SERVO_COLLECT_POS (1.0),
+        ARM_SERVO_DUMP_POS (0.4594),
+        ARM_SERVO_DUMP_POS_AUTO_DRIVE (0.44),
+        ARM_SERVO_GARD_OPEN_POS (0.3),
+        ARM_SERVO_GARD_CLOSE_POS (0.61),
+        ARM_SERVO_GARD_OPEN_CLOSE_POS (0.485);
 
         public Double Pos;
 
@@ -181,27 +181,28 @@ public class RobotHardware_apollo {
         }
         if (initImu)
         {
-            imu = apolloHardwareMap.get(BNO055IMU.class, "imu");
+            imu = apolloHardwareMap.get(BNO055IMU.class, "imu2");
             BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
             parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-            imu.initialize(parameters);
-            if (imu.initialize(parameters) == false)
+            boolean imuInitialize = imu.initialize(parameters);
+            if (imuInitialize == false)
             {
-                imu = apolloHardwareMap.get(BNO055IMU.class, "imu2");
+                imu = apolloHardwareMap.get(BNO055IMU.class, "imu1");
                 parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-                if (imu.initialize(parameters) == false)
+                imuInitialize = imu.initialize(parameters);
+                if (imuInitialize == false)
                 {
-                    Log.d(TAG_HARDWARE, "initialization of imu2 failed");
+                    Log.d(TAG_HARDWARE, "initialization of imu1 failed");
                     intSucceeded = false;
                 }
                 else
                 {
-                    Log.d(TAG_HARDWARE, "initialization of imu2 succeeded");
+                    Log.d(TAG_HARDWARE, "initialization of imu1 succeeded");
                 }
             }
             else
             {
-                Log.d(TAG_HARDWARE, "initialization of imu succeeded");
+                Log.d(TAG_HARDWARE, "initialization of imu2 succeeded");
             }
 
 

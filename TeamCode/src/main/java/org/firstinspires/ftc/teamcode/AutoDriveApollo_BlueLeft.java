@@ -88,11 +88,14 @@ import com.qualcomm.robotcore.util.Range;
 //@Disabled
 public class AutoDriveApollo_BlueLeft extends LinearOpMode {
 
+    AutoDriveApollo_RedRight AutoDriveApollo_RedRight = new AutoDriveApollo_RedRight();
     /* Declare OpMode members. */
     private ElapsedTime time = new ElapsedTime();
     private ElapsedTime TimeOut = new ElapsedTime();
     private double TimeOutSec = 3;
     boolean LIFT_IsBusy;
+    final int dropPixelPos = AutoDriveApollo_RedRight.dropPixelPos;
+    final int dropPixelPosSecond = AutoDriveApollo_RedRight.dropPixelPosSecond;
     double propDetectionTimeOut = 3;
     final String TAG_TIME = "time";
     final String TAG_DRIVE = "drive";
@@ -706,7 +709,7 @@ public class AutoDriveApollo_BlueLeft extends LinearOpMode {
             break;
             case RIGHT:
             {
-                //driveStraight(DRIVE_SPEED,10,heading);
+                driveStraight(DRIVE_SPEED,5,heading);
                 driveRight(DRIVE_SPEED,3,heading);
                 robot.SetPosition(RobotHardware_apollo.DriveMotors.DUMP_SERVO, RobotHardware_apollo.SERVO_POS.DUMP_SERVO_OPEN.Pos);
                 sleep(2000);
@@ -738,30 +741,40 @@ public class AutoDriveApollo_BlueLeft extends LinearOpMode {
         sleep(1000);
 
          */
-        //int Pos = (int) (robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.LIFT));
-        robot.SetTargetPosition(RobotHardware_apollo.DriveMotors.LIFT, 700);
+        //int Pos = (int) (robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.LIFT))
+        robot.SetTargetPosition(RobotHardware_apollo.DriveMotors.LIFT, dropPixelPosSecond);
         robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT, DcMotor.RunMode.RUN_TO_POSITION);
         robot.SetPower(RobotHardware_apollo.DriveMotors.LIFT, 1);
         TimeOut.reset();
         LIFT_IsBusy = robot.IsBusy(RobotHardware_apollo.DriveMotors.LIFT);
-        while ((LIFT_IsBusy) && (TimeOut.seconds() > TimeOutSec))
+        while ((LIFT_IsBusy) && (TimeOut.seconds() < TimeOutSec))
         {
             LIFT_IsBusy = robot.IsBusy(RobotHardware_apollo.DriveMotors.LIFT);
         }
         driveStraight(DRIVE_SPEED,-7,90);
-        //double Pos = robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.LIFT);
-        robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO, RobotHardware_apollo.SERVO_POS.PLANE_SERVO_CLOSE.Pos);
-        robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO, RobotHardware_apollo.SERVO_POS.ARM_SERVO_COLLECT_POS.Pos);
-        sleep(1000);
-        robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT, DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.SetTargetPosition(RobotHardware_apollo.DriveMotors.LIFT,0);
+        /*
+        robot.SetTargetPosition(RobotHardware_apollo.DriveMotors.LIFT, 1000);
         robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT, DcMotor.RunMode.RUN_TO_POSITION);
-        robot.SetPower(RobotHardware_apollo.DriveMotors.LIFT,1);
+        robot.SetPower(RobotHardware_apollo.DriveMotors.LIFT, 1);
         TimeOut.reset();
         LIFT_IsBusy = robot.IsBusy(RobotHardware_apollo.DriveMotors.LIFT);
-        while ((LIFT_IsBusy) && (TimeOut.seconds() > TimeOutSec))
+        while ((LIFT_IsBusy) && (TimeOut.seconds() < TimeOutSec))
         {
             LIFT_IsBusy = robot.IsBusy(RobotHardware_apollo.DriveMotors.LIFT);
+        }
+        //double Pos = robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.LIFT);
+        */
+        robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO, RobotHardware_apollo.SERVO_POS.ARM_SERVO_COLLECT_POS.Pos);
+        robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO, RobotHardware_apollo.SERVO_POS.ARM_SERVO_GARD_OPEN_POS.Pos);
+        sleep(1000);
+        goTo(0);
+        while ((LIFT_IsBusy) && (TimeOut.seconds() < TimeOutSec))
+        {
+            LIFT_IsBusy = robot.IsBusy(RobotHardware_apollo.DriveMotors.LIFT);
+        }
+        if (TimeOut.seconds() > TimeOutSec)
+        {
+
         }
         //sleep(1000);
         driveStraight(DRIVE_SPEED,3,90);
@@ -772,33 +785,33 @@ public class AutoDriveApollo_BlueLeft extends LinearOpMode {
         robot.SetPower(RobotHardware_apollo.DriveMotors.LIFT, 1);
         TimeOut.reset();
         LIFT_IsBusy = robot.IsBusy(RobotHardware_apollo.DriveMotors.LIFT);
-        while ((LIFT_IsBusy) && (TimeOut.seconds() > TimeOutSec))
+        while ((LIFT_IsBusy) && (TimeOut.seconds() < TimeOutSec))
         {
             LIFT_IsBusy = robot.IsBusy(RobotHardware_apollo.DriveMotors.LIFT);
         }
         robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_SERVO, RobotHardware_apollo.SERVO_POS.ARM_SERVO_DUMP_POS_AUTO_DRIVE.Pos);
         sleep(500);
-        robot.SetTargetPosition(RobotHardware_apollo.DriveMotors.LIFT, 275);
+        robot.SetTargetPosition(RobotHardware_apollo.DriveMotors.LIFT, dropPixelPos);
         robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT, DcMotor.RunMode.RUN_TO_POSITION);
         robot.SetPower(RobotHardware_apollo.DriveMotors.LIFT, 1);
         TimeOut.reset();
         LIFT_IsBusy = robot.IsBusy(RobotHardware_apollo.DriveMotors.LIFT);
-        while ((LIFT_IsBusy) && (TimeOut.seconds() > TimeOutSec))
+        while ((LIFT_IsBusy) && (TimeOut.seconds() < TimeOutSec))
         {
             LIFT_IsBusy = robot.IsBusy(RobotHardware_apollo.DriveMotors.LIFT);
         }
         switch (probPos) {
             case RIGHT: {
-                driveRight(DRIVE_SPEED, 5, heading);
+                driveLeft(DRIVE_SURF_SPEED, 8, heading);
                 holdHeading(DRIVE_SPEED, heading, 0.5);
-                driveStraight(DRIVE_SPEED, 8, heading);
-                holdHeading(DRIVE_SPEED, heading, 0.5);
+                driveStraight(DRIVE_SPEED, 22, heading);
             }
             break;
             case LEFT: {
-                driveLeft(DRIVE_SURF_SPEED, 9, heading);
+                driveRight(DRIVE_SPEED, 6, heading);
                 holdHeading(DRIVE_SPEED, heading, 0.5);
-                driveStraight(DRIVE_SPEED, 8, heading);
+                driveStraight(DRIVE_SPEED, 6, heading);
+                holdHeading(DRIVE_SPEED, heading, 0.5);
             }
             case UP: {
                 driveLeft(DRIVE_SPEED,6,heading);
@@ -820,7 +833,7 @@ public class AutoDriveApollo_BlueLeft extends LinearOpMode {
             break;
         }
         holdHeading(DRIVE_SPEED, heading, 0.5);
-        driveStraight(DRIVE_SPEED, 2, heading);
+        driveStraight(DRIVE_SPEED -0.2, 2, heading);
         //sleep(1000);
         robot.SetPosition(RobotHardware_apollo.DriveMotors.ARM_GARD_SERVO, RobotHardware_apollo.SERVO_POS.ARM_SERVO_GARD_OPEN_POS.Pos);
         //sleep(1000);
@@ -897,7 +910,7 @@ public class AutoDriveApollo_BlueLeft extends LinearOpMode {
                 //driveStraight(DRIVE_SPEED,23,-270);
                 holdHeading(TURN_SPEED,-270,0.5);
                 //sleep(500);
-                driveToBackStage(-270, HuskyLens_Apollo.PropPos.RIGHT);
+                driveToBackStage(-270, HuskyLens_Apollo.PropPos.LEFT);
                 getReadyForTeleOp();
 
                  //*/
@@ -912,10 +925,27 @@ public class AutoDriveApollo_BlueLeft extends LinearOpMode {
                 dropPixelAtLine(180,probPos);
                 turnToHeadingApollo(TURN_SPEED,270);
                 holdHeading(TURN_SPEED,270,0.5);
-                driveToBackStage(270, HuskyLens_Apollo.PropPos.LEFT);
+                driveToBackStage(270, HuskyLens_Apollo.PropPos.RIGHT);
                 getReadyForTeleOp();
                 Log.d(TAG_TIME, "the final time is " + time.milliseconds());
             break;
+        }
+    }
+    public void goTo(int Pos)
+    {
+        robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT , DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.SetTargetPosition(RobotHardware_apollo.DriveMotors.LIFT , Pos);
+        robot.SetMode(RobotHardware_apollo.DriveMotors.LIFT , DcMotor.RunMode.RUN_TO_POSITION);
+        int currentPosition = (int) (robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.LIFT));
+        if (currentPosition > Pos)
+        {
+            robot.SetPower(RobotHardware_apollo.DriveMotors.LIFT ,1);
+            robot.SetPower(RobotHardware_apollo.DriveMotors.LIFT_SECOND ,-1);
+        }
+        else
+        {
+            robot.SetPower(RobotHardware_apollo.DriveMotors.LIFT ,1);
+            robot.SetPower(RobotHardware_apollo.DriveMotors.LIFT_SECOND ,1);
         }
     }
 }

@@ -112,16 +112,27 @@ public class RobotHardware_apollo_FtcLib {
      * <p>
      * All of the hardware devices are accessed via the hardware map, and initialized.
      */
-    public void init(HardwareMap apolloHardwareMap)
+    public boolean init(HardwareMap apolloHardwareMap, boolean initImu)
     {
-        imu = apolloHardwareMap.get(IMU.class, "imu");
-        boolean imuInitialize = imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
-                RevHubOrientationOnRobot.UsbFacingDirection.UP
-        )));
+        boolean imuInitialize = true;
+        if (initImu)
+        {
+            imu = apolloHardwareMap.get(IMU.class, "imu2");
+            imuInitialize = imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(
+                    RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
+                    RevHubOrientationOnRobot.UsbFacingDirection.UP
+            )));
+            if (!imuInitialize)
+            {
+                imu = apolloHardwareMap.get(IMU.class, "imu1");
+                imuInitialize = imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(
+                        RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
+                        RevHubOrientationOnRobot.UsbFacingDirection.UP
+                )));
+            }
+            imu.resetYaw();
+        }
 
-
-        imu.resetYaw();
 
         frontLeftDrive = new Motor(apolloHardwareMap, "front_left_drive");
         backLeftDrive = new Motor(apolloHardwareMap, "back_left_drive");
@@ -141,6 +152,7 @@ public class RobotHardware_apollo_FtcLib {
 
          */
         mecanumDriveBase = new MecanumDrive(frontLeftDrive, frontRightDrive, backLeftDrive, backRightDrive);
+        return (imuInitialize);
 
     }
     public void ResetYaw()
@@ -162,7 +174,7 @@ public class RobotHardware_apollo_FtcLib {
     {
         mecanumDriveBase.driveRobotCentric(strafeSpeed, forwardSpeed, turnSpeed);
     }
-    public double getRobotYawPitchRollAngles()
+    public double getYaw()
     {
         return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
     }
