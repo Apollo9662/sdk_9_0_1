@@ -14,6 +14,7 @@ public class HuskyLens_Apollo
     //private final int READ_PERIOD = 1;
     int middle = 180;
     int maxTop = 130;
+    int minTop = 70;
     private boolean isPress = false;
     private enum HuskyLens_State {TAG_RECOGNITION,
         COLOR_RECOGNITION};
@@ -78,12 +79,12 @@ public class HuskyLens_Apollo
                 {
                     if (propColor == PropColor.RED)
                     {
-                        if ((blocks[i].x < middle) && (blocks[i].top < maxTop))
+                        if (((blocks[i].x < middle) && (blocks[i].top < maxTop)) && blocks[i].top > minTop)
                         {
                             propPos = PropPos.UP;
                             Log.d(TAG_HUSKYLENS, "The Prop is on line Up");
                         }
-                        else if ((blocks[i].x > middle)  && (blocks[i].top < maxTop))
+                        else if (((blocks[i].x > middle)  && (blocks[i].top < maxTop)) && blocks[i].top > minTop)
                         {
                             propPos = PropPos.RIGHT;
                             Log.d(TAG_HUSKYLENS, "The Prop is on line Right");
@@ -96,12 +97,12 @@ public class HuskyLens_Apollo
                     }
                     else if (propColor == PropColor.BLUE)
                     {
-                        if ((blocks[i].x < middle) && (blocks[i].top < maxTop))
+                        if (((blocks[i].x < middle) && (blocks[i].top < maxTop)) && blocks[i].top > minTop)
                         {
                             propPos = PropPos.UP;
                             Log.d(TAG_HUSKYLENS, "The Prop is on line Up");
                         }
-                        else if ((blocks[i].x > middle)  && (blocks[i].top < maxTop))
+                        else if (((blocks[i].x > middle)  && (blocks[i].top < maxTop)) && blocks[i].top > minTop)
                         {
                             propPos = PropPos.RIGHT;
                             Log.d(TAG_HUSKYLENS, "The Prop is on line Right");

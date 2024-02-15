@@ -96,6 +96,7 @@ public class AutoDriveApollo_RedRight extends LinearOpMode {
     private double TimeOutSec = 3;
     boolean LIFT_IsBusy;
     double propDetectionTimeOut = 3;
+    boolean Park = false;
     public final int dropPixelPos = 500;
     final int dropPixelPosSecond = dropPixelPos + 200;
     final String TAG_TIME = "time";
@@ -201,7 +202,6 @@ public class AutoDriveApollo_RedRight extends LinearOpMode {
         waitForStart();
 
         TimeOut.reset();
-
 
         //driveLeft(DRIVE_SPEED,10,0);
         //driveRight(DRIVE_SPEED,10,0);
@@ -678,6 +678,33 @@ public class AutoDriveApollo_RedRight extends LinearOpMode {
         headingOffset = getRawHeading();
         robotHeading = 0;
     }
+    public void Park(int heading, HuskyLens_Apollo.PropPos propPos, boolean park)
+    {
+        if (park)
+        {
+            switch (propPos)
+            {
+                case UP:
+                {
+                    driveRight(DRIVE_SPEED,27,heading);
+                }
+                break;
+                case LEFT:
+                {
+                    driveRight(DRIVE_SPEED,32,heading);
+                }
+                break;
+                case RIGHT:
+                {
+                    driveRight(DRIVE_SPEED,19,heading);
+                }
+                break;
+            }
+            holdHeading(TURN_SPEED,heading,0.5);
+            driveStraight(TURN_SPEED,15,heading);
+        }
+
+    }
     public void dropPixelAtLine(double heading, HuskyLens_Apollo.PropPos probPos)
     {
         switch (probPos)
@@ -892,6 +919,7 @@ public class AutoDriveApollo_RedRight extends LinearOpMode {
                 holdHeading(DRIVE_SPEED,-270,0.5);
                 driveToBackStage(-270, probPos);
                 getReadyForTeleOp();
+                Park(-270,probPos, Park);
                 Log.d(TAG_TIME, "the final time is " + time.milliseconds());
             break;
             case RIGHT:
@@ -915,7 +943,7 @@ public class AutoDriveApollo_RedRight extends LinearOpMode {
                 //sleep(500);
                 driveToBackStage(-270, HuskyLens_Apollo.PropPos.RIGHT);
                 getReadyForTeleOp();
-
+                Park(-270,probPos, Park);
                  //*/
                 Log.d(TAG_TIME, "the final time is " + time.milliseconds());
             break;
@@ -928,6 +956,7 @@ public class AutoDriveApollo_RedRight extends LinearOpMode {
                 sleep(500);
                 driveToBackStage(-270, HuskyLens_Apollo.PropPos.LEFT);
                 getReadyForTeleOp();
+                Park(-270,probPos, Park);
                 Log.d(TAG_TIME, "the final time is " + time.milliseconds());
             break;
         }
