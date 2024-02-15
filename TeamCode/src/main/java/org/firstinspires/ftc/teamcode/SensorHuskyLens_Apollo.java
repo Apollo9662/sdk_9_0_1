@@ -178,6 +178,8 @@ public class SensorHuskyLens_Apollo extends LinearOpMode {
 
             telemetry.addData("Block count", blocks.length);
             for (int i = 0; i < blocks.length; i++) {
+                telemetry.addLine( "id=" + blocks[i].id + " size: " + blocks[i].width + "x" + blocks[i].height + " position: " + blocks[i].x + "," + blocks[i].y);
+                telemetry.addLine( "id=" + blocks[i].id +  " , top " + blocks[i].top + " , left " + blocks[i].left);
                 telemetry.addData("Block", blocks[i].toString());
             }
             telemetry.update();

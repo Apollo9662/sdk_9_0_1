@@ -96,8 +96,8 @@ public class AutoDriveApollo_RedRight extends LinearOpMode {
     private double TimeOutSec = 3;
     boolean LIFT_IsBusy;
     double propDetectionTimeOut = 3;
-    public final int dropPixelPos = 600;
-    final int dropPixelPosSecond = dropPixelPos + 300;
+    public final int dropPixelPos = 500;
+    final int dropPixelPosSecond = dropPixelPos + 200;
     final String TAG_TIME = "time";
     final String TAG_LIFT_TIME_OUT = "lift_time_out";
     final String TAG_DRIVE = "drive";
@@ -753,6 +753,7 @@ public class AutoDriveApollo_RedRight extends LinearOpMode {
         {
             LIFT_IsBusy = robot.IsBusy(RobotHardware_apollo.DriveMotors.LIFT);
         }
+        robot.SetPower(RobotHardware_apollo.DriveMotors.LIFT_SECOND,0);
         driveStraight(DRIVE_SPEED,-7,90);
         /*
         robot.SetTargetPosition(RobotHardware_apollo.DriveMotors.LIFT, 1000);

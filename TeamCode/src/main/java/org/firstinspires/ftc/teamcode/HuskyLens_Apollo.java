@@ -12,7 +12,8 @@ public class HuskyLens_Apollo
 {
     final String TAG_HUSKYLENS = "HuskyLens_Apollo";
     //private final int READ_PERIOD = 1;
-    double middle = 180;
+    int middle = 180;
+    int maxTop = 130;
     private boolean isPress = false;
     private enum HuskyLens_State {TAG_RECOGNITION,
         COLOR_RECOGNITION};
@@ -53,10 +54,10 @@ public class HuskyLens_Apollo
         Log.d(TAG_HUSKYLENS ,"find prop color " + propColor.toString());
         if (propColor == PropColor.RED)
         {
-            propId = 1;
+            propId = 2;
         }
         else {
-            propId = 2;
+            propId = 1;
         }
         return intSucceeded;
     }
@@ -69,19 +70,20 @@ public class HuskyLens_Apollo
             Log.d(TAG_HUSKYLENS, " The number of blocks is " + blocks.length);
             for (int i = 0; (i < blocks.length) && (propPos == null); i++)
             {
-                // id1 is the red one, id2 is the blue one.
+                //play with top or left
+                // id2 is the red one, id1 is the blue one.
                 Log.d(TAG_HUSKYLENS, "the id of block" + i + "is" + blocks[i].id);
                 Log.d(TAG_HUSKYLENS, "The position of block " + i + " is [x,y] (" + blocks[i].x + "," + blocks[i].y + ")");
                 if (propId == blocks[i].id)
                 {
                     if (propColor == PropColor.RED)
                     {
-                        if (blocks[i].x < middle)
+                        if ((blocks[i].x < middle) && (blocks[i].top < maxTop))
                         {
                             propPos = PropPos.UP;
                             Log.d(TAG_HUSKYLENS, "The Prop is on line Up");
                         }
-                        else if (blocks[i].x > middle)
+                        else if ((blocks[i].x > middle)  && (blocks[i].top < maxTop))
                         {
                             propPos = PropPos.RIGHT;
                             Log.d(TAG_HUSKYLENS, "The Prop is on line Right");
@@ -94,12 +96,12 @@ public class HuskyLens_Apollo
                     }
                     else if (propColor == PropColor.BLUE)
                     {
-                        if (blocks[i].x < middle)
+                        if ((blocks[i].x < middle) && (blocks[i].top < maxTop))
                         {
                             propPos = PropPos.UP;
                             Log.d(TAG_HUSKYLENS, "The Prop is on line Up");
                         }
-                        else if (blocks[i].x > middle)
+                        else if ((blocks[i].x > middle)  && (blocks[i].top < maxTop))
                         {
                             propPos = PropPos.RIGHT;
                             Log.d(TAG_HUSKYLENS, "The Prop is on line Right");
