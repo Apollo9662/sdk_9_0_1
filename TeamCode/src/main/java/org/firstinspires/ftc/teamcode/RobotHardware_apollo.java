@@ -123,8 +123,8 @@ public class RobotHardware_apollo {
     PLANE_STATE plane_state;
     public enum SERVO_POS {
         DUMP_SERVO_CLOSE (0.9),
-        LIFT_STOP_SERVO_OPEN(0.75),
-        LIFT_STOP_SERVO_CLOSE(0.05),
+        LIFT_STOP_SERVO_OPEN(0.52),
+        LIFT_STOP_SERVO_CLOSE(0.10),
         DUMP_SERVO_OPEN (0.32),
         PLANE_SERVO_CLOSE (0.9),
         PLANE_SERVO_OPEN (0.25),

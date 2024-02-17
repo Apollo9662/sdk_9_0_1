@@ -428,8 +428,7 @@ public class BasicOpMode_apollo_better extends OpMode {
                         robot.SetPosition(RobotHardware_apollo.DriveMotors.LIFT_STOP_SERVO, RobotHardware_apollo.SERVO_POS.LIFT_STOP_SERVO_CLOSE.Pos);
                         liftStopStat = LiftStopStat.CLOSE;
                     }
-
-                     */
+                    */
                     if (gamepadEx2.wasJustPressed(GamepadKeys.Button.LEFT_STICK_BUTTON))
                         {
                         if (robot.plane_state == RobotHardware_apollo.PLANE_STATE.OPEN)
@@ -780,10 +779,11 @@ public class BasicOpMode_apollo_better extends OpMode {
                 if (liftStop)
                 {
                     switch (liftStopStat)
-                    {/*
+                    {
                         case OPEN:
                             robot.SetPosition(RobotHardware_apollo.DriveMotors.LIFT_STOP_SERVO, RobotHardware_apollo.SERVO_POS.LIFT_STOP_SERVO_CLOSE.Pos);
                             liftStopStat = LiftStopStat.CLOSE;
+                            Log.d(TAG_LIFT,"lift Pos at lock is " + robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.LIFT));
                         break;
                         case CLOSE:
                             robot.SetPosition(RobotHardware_apollo.DriveMotors.LIFT_STOP_SERVO, RobotHardware_apollo.SERVO_POS.LIFT_STOP_SERVO_OPEN.Pos);
@@ -792,8 +792,6 @@ public class BasicOpMode_apollo_better extends OpMode {
                         default:
 
                         break;
-
-                        */
 
                     }
                 }
@@ -951,7 +949,6 @@ public class BasicOpMode_apollo_better extends OpMode {
                         try {
                             switch (liftXStat)
                             {
-                                /*
                                 case FIRST:
                                     goTo(FOURTH_LIFT);
                                     setGateServoToClose();
@@ -960,7 +957,7 @@ public class BasicOpMode_apollo_better extends OpMode {
                                 break;
                                 case SECOND:
                                     goTo(250);//0/250
-                                    setGateServoToClose();
+                                    //setGateServoToClose();
                                     LIFT_IsBusy = robot.IsBusy(RobotHardware_apollo.DriveMotors.LIFT);
                                     while ((LIFT_IsBusy) && (TimeOut.seconds() < TimeOutSec))
                                     {
@@ -968,10 +965,9 @@ public class BasicOpMode_apollo_better extends OpMode {
                                     }
                                     robot.SetPosition(RobotHardware_apollo.DriveMotors.LIFT_STOP_SERVO, RobotHardware_apollo.SERVO_POS.LIFT_STOP_SERVO_CLOSE.Pos);
                                     liftStopStat = LiftStopStat.CLOSE;
+                                    Log.d(TAG_LIFT,"lift Pos at lock is " + robot.GetCurrentPosition(RobotHardware_apollo.DriveMotors.LIFT));
                                     //collectThread.DumpPixel();
                                 break;
-
-                                 */
                             }
                         }  catch (Exception e)
                         {
