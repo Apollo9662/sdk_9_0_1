@@ -96,7 +96,7 @@ public class AutoDriveApollo_RedRight extends LinearOpMode {
     private double TimeOutSec = 3;
     boolean LIFT_IsBusy;
     double propDetectionTimeOut = 3;
-    boolean Park = false;
+    boolean Park = true;
     public final int dropPixelPos = 500;
     final int dropPixelPosSecond = dropPixelPos + 200;
     final String TAG_TIME = "time";
