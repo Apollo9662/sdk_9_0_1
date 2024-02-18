@@ -94,7 +94,7 @@ public class AutoDriveApollo_BlueLeft extends LinearOpMode {
     private ElapsedTime TimeOut = new ElapsedTime();
     private double TimeOutSec = 3;
     boolean LIFT_IsBusy;
-    boolean Park = true;
+    boolean Park = false;
     final int dropPixelPos = AutoDriveApollo_RedRight.dropPixelPos;
     final int dropPixelPosSecond = AutoDriveApollo_RedRight.dropPixelPosSecond;
     double propDetectionTimeOut = 3;
