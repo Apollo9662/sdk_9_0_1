@@ -833,7 +833,7 @@ public class AutoDriveApollo_RedRight extends LinearOpMode {
         switch (probPos) {
             case RIGHT: {
                 //driveRight(DRIVE_SPEED, 7, heading);
-                driveRight(DRIVE_SPEED, 6, heading);
+                driveRight(DRIVE_SPEED, 5, heading);
                 holdHeading(DRIVE_SPEED, heading, 0.5);
                 driveStraight(DRIVE_SPEED, 6, heading);
                 holdHeading(DRIVE_SPEED, heading, 0.5);
