@@ -748,7 +748,7 @@ public class AutoDriveApollo_BlueLeft extends LinearOpMode {
             break;
             case RIGHT:
             {
-                driveStraight(DRIVE_SPEED,5,heading);
+                //driveStraight(DRIVE_SPEED,5,heading);
                 driveRight(DRIVE_SPEED,3,heading);
                 robot.SetPosition(RobotHardware_apollo.DriveMotors.DUMP_SERVO, RobotHardware_apollo.SERVO_POS.DUMP_SERVO_OPEN.Pos);
                 sleep(2000);
@@ -845,7 +845,7 @@ public class AutoDriveApollo_BlueLeft extends LinearOpMode {
         }
         switch (probPos) {
             case RIGHT: {
-                driveLeft(DRIVE_SURF_SPEED, 7, heading);
+                driveRight(DRIVE_SURF_SPEED, 4, heading);
                 holdHeading(DRIVE_SPEED, heading, 0.5);
                 driveStraight(DRIVE_SPEED, 22, heading);
             }

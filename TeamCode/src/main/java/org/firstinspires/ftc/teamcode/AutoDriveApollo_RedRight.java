@@ -96,7 +96,7 @@ public class AutoDriveApollo_RedRight extends LinearOpMode {
     private double TimeOutSec = 3;
     boolean LIFT_IsBusy;
     double propDetectionTimeOut = 3;
-    boolean Park = true;
+    boolean Park = false;
     public final int dropPixelPos = 500;
     final int dropPixelPosSecond = dropPixelPos + 200;
     final String TAG_TIME = "time";
@@ -691,7 +691,7 @@ public class AutoDriveApollo_RedRight extends LinearOpMode {
                 break;
                 case LEFT:
                 {
-                    driveRight(DRIVE_SPEED,32,heading);
+                    driveRight(DRIVE_SPEED,33,heading);
                 }
                 break;
                 case RIGHT:
@@ -711,7 +711,7 @@ public class AutoDriveApollo_RedRight extends LinearOpMode {
         {
             case UP:
             {
-                driveRight(DRIVE_SPEED,6,heading);
+                driveRight(DRIVE_SPEED,7,heading);
                 driveStraight(DRIVE_SPEED,5,heading);
                 //driveLeft(DRIVE_SPEED,3,heading);
                 robot.SetPosition(RobotHardware_apollo.DriveMotors.DUMP_SERVO, RobotHardware_apollo.SERVO_POS.DUMP_SERVO_OPEN.Pos);
@@ -726,7 +726,7 @@ public class AutoDriveApollo_RedRight extends LinearOpMode {
             break;
             case LEFT:
             {
-                driveRight(DRIVE_SPEED,3,heading);
+                //driveRight(DRIVE_SPEED,1,heading);
                 robot.SetPosition(RobotHardware_apollo.DriveMotors.DUMP_SERVO, RobotHardware_apollo.SERVO_POS.DUMP_SERVO_OPEN.Pos);
                 sleep(2000);
                 driveLeft(DRIVE_SPEED,13,heading);
@@ -739,7 +739,7 @@ public class AutoDriveApollo_RedRight extends LinearOpMode {
             case RIGHT:
             {
                 //driveStraight(DRIVE_SPEED,10,heading);
-                driveRight(DRIVE_SPEED,1,heading);
+                driveLeft(DRIVE_SPEED,4,heading);
                 robot.SetPosition(RobotHardware_apollo.DriveMotors.DUMP_SERVO, RobotHardware_apollo.SERVO_POS.DUMP_SERVO_OPEN.Pos);
                 sleep(2000);
                 driveLeft(DRIVE_SPEED,14,heading);
@@ -833,21 +833,21 @@ public class AutoDriveApollo_RedRight extends LinearOpMode {
         switch (probPos) {
             case RIGHT: {
                 //driveRight(DRIVE_SPEED, 7, heading);
-                driveRight(DRIVE_SPEED, 5, heading);
+                driveRight(DRIVE_SPEED, 7, heading);
                 holdHeading(DRIVE_SPEED, heading, 0.5);
                 driveStraight(DRIVE_SPEED, 6, heading);
                 holdHeading(DRIVE_SPEED, heading, 0.5);
             }
             break;
             case LEFT: {
-                driveLeft(DRIVE_SURF_SPEED, 9, heading);
+                driveLeft(DRIVE_SURF_SPEED, 8, heading);
                 holdHeading(DRIVE_SPEED, heading, 0.5);
                 driveStraight(DRIVE_SPEED, 7, heading);
             }
             case UP: {
-                driveLeft(DRIVE_SPEED,6,heading);
+                driveLeft(DRIVE_SPEED,5,heading);
                 holdHeading(TURN_SPEED,heading,0.5);
-                driveStraight(DRIVE_SPEED, 17, heading);
+                driveStraight(DRIVE_SPEED, 19, heading);
                 //driveLeft(DRIVE_SURF_SPEED,3,heading);
             }
             break;
@@ -860,6 +860,11 @@ public class AutoDriveApollo_RedRight extends LinearOpMode {
             break;
             case LEFT: {
                 //driveLeft(DRIVE_SURF_SPEED, 4, heading);
+            }
+            break;
+            case UP:
+            {
+                driveStraight(DRIVE_SPEED - 0.2, 1,heading);
             }
             break;
         }
@@ -950,7 +955,7 @@ public class AutoDriveApollo_RedRight extends LinearOpMode {
             break;
             case LEFT:
                 time.reset();
-                driveStraight(DRIVE_SPEED,-24,0);
+                driveStraight(DRIVE_SPEED,-25,0);
                 //Todo: add drop first pixel function
                 dropPixelAtLine(0,probPos);
                 turnToHeadingApollo(TURN_SPEED,-270);
